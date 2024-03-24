@@ -6,7 +6,24 @@
         xmlns:local="clr-namespace:FileExplorer"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="_File">
+                <MenuItem Header="_Open" Click="MenuOpen_Click"/>
+                <Separator />
+                <MenuItem Header="_Exit" Click="MenuExit_Click"/>
+            </MenuItem>
+        </Menu>
+        <TextBox AcceptsReturn="True" />
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TreeView Grid.Column="0" Name="treeView" PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10"/>
+            <ScrollViewer Grid.Column="1" Margin="10">
+                <TextBlock Name="textBlock" TextWrapping="Wrap"/>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
 </Window>
