@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -56,7 +57,7 @@ namespace FileExplorer
             TreeView.Items.Clear();
             TreeView.Items.Add(rootNode);
             TreeView.SelectedItemChanged += treeView_SelectedItemChanged;
-            ////treeView.MouseRightButtonDown += CreateMenuItem_Click;
+            //treeView.MouseRightButtonDown += CreateMenuItem_Click;
             LoadFolders(folderPath, rootNode);
         }
 
@@ -107,6 +108,7 @@ namespace FileExplorer
                     {
                         AttributesTextBlock.Text = $"Error: {ex.Message}";
                     }
+
                     if (File.Exists(filePath))
                     {
                         try
@@ -122,6 +124,10 @@ namespace FileExplorer
                             MessageBox.Show("Error reading file: " + ex.Message);
                         }
                     }
+                    else
+                    {
+                        TextBlock.Text = "Folder";
+                    }
                 }
                 else
                 {
@@ -132,42 +138,117 @@ namespace FileExplorer
 
         private void treeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            CreateForm createForm = new CreateForm();
-            createForm.Owner = this; // Ustawiamy właściciela formularza (opcjonalne)
-            createForm.ShowDialog();
-
-            if (createForm.DialogResult == true)
+            if (TreeView.SelectedItem is TreeViewItem item && item.Parent is ItemsControl parent)
             {
-                string name = createForm.FileName;
-                bool isFolder = createForm.IsFolder;
-
-                if (isFolder)
+                string path = item.Tag as string;
+                if (path != null)
                 {
-                    Directory.CreateDirectory(name); // Tworzenie nowego folderu
+                    try
+                    {
+                        ContextMenu contextMenu = FindResource("TreeViewContextMenu") as ContextMenu;
+                        if (contextMenu != null)
+                        {
+                            if (File.Exists(path))
+                            {
+                                MenuItem createMenuItem = contextMenu.Items.OfType<MenuItem>()
+                                    .FirstOrDefault(m => m.Name == "CreateMenuItem");
+                                if (createMenuItem != null)
+                                {
+                                    createMenuItem.Visibility = Visibility.Collapsed;
+                                }
+                            }
+                            
+                            contextMenu.PlacementTarget = sender as UIElement;
+                            contextMenu.IsOpen = true;
+                            e.Handled = true;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading file: " + ex.Message);
+                    }
                 }
-                else
+            }
+        }
+
+        private void CreateMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            CreateForm createForm = new CreateForm();
+            bool? result = createForm.ShowDialog();
+
+            if (result == true)
+            {
+                try
                 {
-                    File.Create(name); // Tworzenie nowego pliku
+                    if (TreeView.SelectedItem is TreeViewItem item)
+                    {
+                        string currentPath = item.Tag as string;
+                        if (currentPath != null)
+                        {
+                            string name = createForm.FileOrFolderName;
+                            bool isFolder = createForm.IsFolder;
+                            bool isReadOnly = createForm.IsReadOnly;
+                            bool isArchive = createForm.IsArchive;
+                            bool isHidden = createForm.IsHidden;
+                            bool isSystem = createForm.IsSystem;
+
+                            FileAttributes attributes = default(FileAttributes);
+                            if (isReadOnly) attributes |= FileAttributes.ReadOnly;
+                            if (isArchive) attributes |= FileAttributes.Archive;
+                            if (isHidden) attributes |= FileAttributes.Hidden;
+                            if (isSystem) attributes |= FileAttributes.System;
+
+                            string newItemPath = Path.Combine(currentPath, name);
+                            item.Items.Add(name);
+                            if (isFolder)
+                            {
+                                Directory.CreateDirectory(newItemPath);
+                                new DirectoryInfo(newItemPath).Attributes |= attributes;
+                            }
+                            else
+                            {
+                                File.Create(newItemPath);
+                                File.SetAttributes(newItemPath, attributes);
+                            }
+                        }
+                    }
                 }
-
-                // Komunikat informujący użytkownika o sukcesie
-                MessageBox.Show("File or folder was created successfully.", "Success", MessageBoxButton.OK,
-                    MessageBoxImage.Information);
-
-                // Tutaj możemy użyć pobranych danych, np. do tworzenia pliku lub folderu
-                // Należy również dodać nowy element do drzewa reprezentujący utworzony plik lub folder
-                TreeViewItem newItem = new TreeViewItem();
-                newItem.Header = name;
-                newItem.Tag = isFolder ? "Folder" : "File";
-
-                if (TreeView.SelectedItem is TreeViewItem selectedFolder)
+                catch (Exception ex)
                 {
-                    selectedFolder.Items.Add(newItem); // Dodajemy nowy element jako dziecko wybranego folderu
+                    MessageBox.Show("Error reading file: " + ex.Message);
                 }
-                else
+            }
+        }
+
+        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (TreeView.SelectedItem is TreeViewItem item && item.Parent is ItemsControl parent)
+            {
+                string path = item.Tag as string;
+                if (path != null)
                 {
-                    TreeView.Items
-                        .Add(newItem); // Jeśli nie ma wybranego folderu, dodajemy element do głównego poziomu drzewa
+                    try
+                    {
+                        if (Directory.Exists(path))
+                        {
+                            MessageBox.Show("Folder");
+
+                            File.SetAttributes(path, FileAttributes.Normal);
+
+                            var x = Directory.Exists(path);
+                            parent.Items.Remove(item);
+                            Directory.Delete(path, true);
+                        }
+                        else
+                        {
+                            parent.Items.Remove(item);
+                            File.Delete(path);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error reading file: " + ex.Message);
+                    }
                 }
             }
         }

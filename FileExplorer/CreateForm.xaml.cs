@@ -20,8 +20,12 @@ namespace FileExplorer
     /// </summary>
     public partial class CreateForm : Window
     {
-        public string FileName { get; set; }
+        public string FileOrFolderName { get; set; }
         public bool IsFolder { get; set; }
+        public bool IsReadOnly { get; set; }
+        public bool IsArchive { get; set; }
+        public bool IsHidden { get; set; }
+        public bool IsSystem { get; set; }
 
         public CreateForm()
         {
@@ -30,10 +34,21 @@ namespace FileExplorer
 
         private void OK_Click(object sender, RoutedEventArgs e)
         {
-            FileName = txtName.Text;
-            IsFolder = chkIsFolder.IsChecked ?? false;
-            DialogResult = true;
-            Close();
+            if (string.IsNullOrWhiteSpace(Name.Text))
+            {
+                MessageBox.Show("The name must be filled in");
+            }
+            else
+            {
+                FileOrFolderName = Name.Text;
+                IsFolder = CheckIsFolder.IsChecked ?? false;
+                IsReadOnly = ReadOnlyCheckBox.IsChecked ?? false;
+                IsArchive = ArchiveCheckBox.IsChecked ?? false;
+                IsHidden = HiddenCheckBox.IsChecked ?? false;
+                IsSystem = SystemCheckBox.IsChecked ?? false;
+                DialogResult = true;
+                Close();
+            }
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -41,20 +56,5 @@ namespace FileExplorer
             DialogResult = false;
             Close();
         }
-
-        //private void ShowCreateForm()
-        //{
-        //    CreateForm createForm = new CreateForm();
-        //    //createForm.Owner = this; // Ustawienie właściciela formularza (opcjonalne)
-        //    createForm.ShowDialog();
-
-        //    // Po zamknięciu formularza możesz sprawdzić, czy użytkownik kliknął OK i pobrać dane z formularza
-        //    if (createForm.DialogResult == true)
-        //    {
-        //        string name = createForm.FileName;
-        //        bool isFolder = createForm.IsFolder;
-        //        // Tutaj możesz użyć pobranych danych, np. do tworzenia pliku lub folderu
-        //    }
-        //}
     }
 }

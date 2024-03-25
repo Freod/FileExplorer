@@ -8,20 +8,30 @@
         Title="CreateForm" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Label Grid.Row="0" Content="Nazwa:"/>
-        <TextBox Grid.Row="0" Name="txtName"/>
+        <Label Grid.Row="0" Content="Name:" />
+        <TextBox Grid.Row="0" Name="Name" />
 
-        <CheckBox Grid.Row="1" Content="Folder" Name="chkIsFolder"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <RadioButton GroupName="FileOrFolder" Content="File" IsChecked="True"/>
+            <RadioButton GroupName="FileOrFolder" Content="Folder" Name="CheckIsFolder" />
+        </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button Content="OK" Click="OK_Click"/>
-            <Button Content="Anuluj" Click="Cancel_Click"/>
+        <StackPanel Grid.Row="2" Orientation="Vertical">
+            <CheckBox Content="ReadOnly" Name="ReadOnlyCheckBox" />
+            <CheckBox Content="Archive" Name="ArchiveCheckBox" />
+            <CheckBox Content="Hidden" Name="HiddenCheckBox" />
+            <CheckBox Content="System" Name="SystemCheckBox" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal">
+            <Button Content="OK" Click="OK_Click" />
+            <Button Content="Cancel" Click="Cancel_Click" />
         </StackPanel>
     </Grid>
 </Window>
