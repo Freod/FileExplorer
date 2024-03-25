@@ -53,9 +53,9 @@ namespace FileExplorer
             TreeViewItem rootNode = new TreeViewItem();
             rootNode.Header = folderPath;
             rootNode.Tag = folderPath;
-            treeView.Items.Clear();
-            treeView.Items.Add(rootNode);
-            treeView.SelectedItemChanged += treeView_SelectedItemChanged;
+            TreeView.Items.Clear();
+            TreeView.Items.Add(rootNode);
+            TreeView.SelectedItemChanged += treeView_SelectedItemChanged;
             ////treeView.MouseRightButtonDown += CreateMenuItem_Click;
             LoadFolders(folderPath, rootNode);
         }
@@ -85,37 +85,51 @@ namespace FileExplorer
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Error loading folders: " + ex.Message);
+                MessageBox.Show("Error loading folders: " + ex.Message);
             }
         }
 
         private void treeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (treeView.SelectedItem is TreeViewItem item)
+            if (TreeView.SelectedItem is TreeViewItem item)
             {
                 string filePath = item.Tag as string;
-                if (filePath != null && File.Exists(filePath))
+
+                if (filePath != null)
                 {
                     try
                     {
-                        using (var textReader = File.OpenText(filePath))
-                        {
-                            string text = textReader.ReadToEnd();
-                            textBlock.Text = text;
-                        }
+                        FileAttributes attributes = File.GetAttributes(filePath);
+                        string attributeString = ConvertAttributesToString(attributes);
+                        AttributesTextBlock.Text = $"Attributes: {attributeString}";
                     }
                     catch (Exception ex)
                     {
-                        MessageBox.Show("Błąd odczytu pliku: " + ex.Message);
+                        AttributesTextBlock.Text = $"Error: {ex.Message}";
+                    }
+                    if (File.Exists(filePath))
+                    {
+                        try
+                        {
+                            using (var textReader = File.OpenText(filePath))
+                            {
+                                string text = textReader.ReadToEnd();
+                                TextBlock.Text = text;
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            MessageBox.Show("Error reading file: " + ex.Message);
+                        }
                     }
                 }
                 else
                 {
-                    textBlock.Text = "Wybrany element nie jest plikiem lub nie istnieje.";
+                    TextBlock.Text = "The selected item is not a file or does not exist.";
                 }
             }
         }
-        
+
         private void treeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
             CreateForm createForm = new CreateForm();
@@ -137,7 +151,8 @@ namespace FileExplorer
                 }
 
                 // Komunikat informujący użytkownika o sukcesie
-                MessageBox.Show("Plik lub folder został utworzony pomyślnie.", "Sukces", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("File or folder was created successfully.", "Success", MessageBoxButton.OK,
+                    MessageBoxImage.Information);
 
                 // Tutaj możemy użyć pobranych danych, np. do tworzenia pliku lub folderu
                 // Należy również dodać nowy element do drzewa reprezentujący utworzony plik lub folder
@@ -145,15 +160,43 @@ namespace FileExplorer
                 newItem.Header = name;
                 newItem.Tag = isFolder ? "Folder" : "File";
 
-                if (treeView.SelectedItem is TreeViewItem selectedFolder)
+                if (TreeView.SelectedItem is TreeViewItem selectedFolder)
                 {
                     selectedFolder.Items.Add(newItem); // Dodajemy nowy element jako dziecko wybranego folderu
                 }
                 else
                 {
-                    treeView.Items.Add(newItem); // Jeśli nie ma wybranego folderu, dodajemy element do głównego poziomu drzewa
+                    TreeView.Items
+                        .Add(newItem); // Jeśli nie ma wybranego folderu, dodajemy element do głównego poziomu drzewa
                 }
             }
+        }
+
+        private string ConvertAttributesToString(FileAttributes attributes)
+        {
+            string result = "";
+
+            if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+                result += "r";
+            else
+                result += "-";
+
+            if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
+                result += "a";
+            else
+                result += "-";
+
+            if ((attributes & FileAttributes.System) == FileAttributes.System)
+                result += "s";
+            else
+                result += "-";
+
+            if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+                result += "h";
+            else
+                result += "-";
+
+            return result;
         }
     }
 }
