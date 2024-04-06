@@ -3,10 +3,9 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FileExplorer"
         mc:Ignorable="d"
         Title="CreateForm" Height="450" Width="800">
-    <Grid>
+    <Grid Margin="10, 10, 10, 10">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -18,20 +17,20 @@
         <TextBox Grid.Row="0" Name="Name" />
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <RadioButton GroupName="FileOrFolder" Content="File" IsChecked="True"/>
-            <RadioButton GroupName="FileOrFolder" Content="Folder" Name="CheckIsFolder" />
+            <RadioButton GroupName="FileOrFolder" Content="File" IsChecked="True" Margin="4" />
+            <RadioButton GroupName="FileOrFolder" Content="Folder" Name="CheckIsFolder" Margin="4" />
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Vertical">
-            <CheckBox Content="ReadOnly" Name="ReadOnlyCheckBox" />
-            <CheckBox Content="Archive" Name="ArchiveCheckBox" />
-            <CheckBox Content="Hidden" Name="HiddenCheckBox" />
-            <CheckBox Content="System" Name="SystemCheckBox" />
+            <CheckBox Content="ReadOnly" Name="ReadOnlyCheckBox" Margin="4" />
+            <CheckBox Content="Archive" Name="ArchiveCheckBox" Margin="4" />
+            <CheckBox Content="Hidden" Name="HiddenCheckBox" Margin="4" />
+            <CheckBox Content="System" Name="SystemCheckBox" Margin="4" />
         </StackPanel>
 
         <StackPanel Grid.Row="3" Orientation="Horizontal">
-            <Button Content="OK" Click="OK_Click" />
-            <Button Content="Cancel" Click="Cancel_Click" />
+            <Button Content="OK" Click="OK_Click" Margin="4" />
+            <Button Content="Cancel" Click="Cancel_Click" Margin="4" />
         </StackPanel>
     </Grid>
 </Window>

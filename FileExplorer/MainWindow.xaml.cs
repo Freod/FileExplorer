@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
+using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
+using Application = System.Windows.Application;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using Exception = System.Exception;
+using MenuItem = System.Windows.Controls.MenuItem;
+using MessageBox = System.Windows.MessageBox;
 using Path = System.IO.Path;
 
 namespace FileExplorer
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
@@ -36,22 +31,20 @@ namespace FileExplorer
 
         private void MenuOpen_Click(object sender, RoutedEventArgs e)
         {
-            using (var dialog = new System.Windows.Forms.FolderBrowserDialog())
+            using (var dialog = new FolderBrowserDialog())
             {
                 dialog.Description = "Select directory to open";
 
-                System.Windows.Forms.DialogResult result = dialog.ShowDialog();
+                var result = dialog.ShowDialog();
 
                 if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(dialog.SelectedPath))
-                {
                     PopulateTreeView(dialog.SelectedPath);
-                }
             }
         }
 
         private void PopulateTreeView(string folderPath)
         {
-            TreeViewItem rootNode = new TreeViewItem();
+            var rootNode = new TreeViewItem();
             rootNode.Header = folderPath;
             rootNode.Tag = folderPath;
             TreeView.Items.Clear();
@@ -65,20 +58,20 @@ namespace FileExplorer
         {
             try
             {
-                string[] subdirectories = Directory.GetDirectories(path);
-                foreach (string subdirectory in subdirectories)
+                var subdirectories = Directory.GetDirectories(path);
+                foreach (var subdirectory in subdirectories)
                 {
-                    TreeViewItem folderNode = new TreeViewItem();
+                    var folderNode = new TreeViewItem();
                     folderNode.Header = Path.GetFileName(subdirectory);
                     folderNode.Tag = subdirectory;
                     parentNode.Items.Add(folderNode);
                     LoadFolders(subdirectory, folderNode); // Recursive call
                 }
 
-                string[] files = Directory.GetFiles(path);
-                foreach (string file in files)
+                var files = Directory.GetFiles(path);
+                foreach (var file in files)
                 {
-                    TreeViewItem fileNode = new TreeViewItem();
+                    var fileNode = new TreeViewItem();
                     fileNode.Header = Path.GetFileName(file);
                     fileNode.Tag = file;
                     parentNode.Items.Add(fileNode);
@@ -94,14 +87,14 @@ namespace FileExplorer
         {
             if (TreeView.SelectedItem is TreeViewItem item)
             {
-                string filePath = item.Tag as string;
+                var filePath = item.Tag as string;
 
                 if (filePath != null)
                 {
                     try
                     {
-                        FileAttributes attributes = File.GetAttributes(filePath);
-                        string attributeString = ConvertAttributesToString(attributes);
+                        var attributes = File.GetAttributes(filePath);
+                        var attributeString = ConvertAttributesToString(attributes);
                         AttributesTextBlock.Text = $"Attributes: {attributeString}";
                     }
                     catch (Exception ex)
@@ -110,12 +103,11 @@ namespace FileExplorer
                     }
 
                     if (File.Exists(filePath))
-                    {
                         try
                         {
                             using (var textReader = File.OpenText(filePath))
                             {
-                                string text = textReader.ReadToEnd();
+                                var text = textReader.ReadToEnd();
                                 TextBlock.Text = text;
                             }
                         }
@@ -123,11 +115,8 @@ namespace FileExplorer
                         {
                             MessageBox.Show("Error reading file: " + ex.Message);
                         }
-                    }
                     else
-                    {
                         TextBlock.Text = "Folder";
-                    }
                 }
                 else
                 {
@@ -140,24 +129,26 @@ namespace FileExplorer
         {
             if (TreeView.SelectedItem is TreeViewItem item && item.Parent is ItemsControl parent)
             {
-                string path = item.Tag as string;
+                var path = item.Tag as string;
                 if (path != null)
-                {
                     try
                     {
-                        ContextMenu contextMenu = FindResource("TreeViewContextMenu") as ContextMenu;
+                        var contextMenu = FindResource("TreeViewContextMenu") as ContextMenu;
                         if (contextMenu != null)
                         {
                             if (File.Exists(path))
                             {
-                                MenuItem createMenuItem = contextMenu.Items.OfType<MenuItem>()
+                                var createMenuItem = contextMenu.Items.OfType<MenuItem>()
                                     .FirstOrDefault(m => m.Name == "CreateMenuItem");
-                                if (createMenuItem != null)
-                                {
-                                    createMenuItem.Visibility = Visibility.Collapsed;
-                                }
+                                if (createMenuItem != null) createMenuItem.Visibility = Visibility.Collapsed;
                             }
-                            
+                            else
+                            {
+                                var createMenuItem = contextMenu.Items.OfType<MenuItem>()
+                                    .FirstOrDefault(m => m.Name == "CreateMenuItem");
+                                if (createMenuItem != null) createMenuItem.Visibility = Visibility.Visible;
+                            }
+
                             contextMenu.PlacementTarget = sender as UIElement;
                             contextMenu.IsOpen = true;
                             e.Handled = true;
@@ -167,39 +158,40 @@ namespace FileExplorer
                     {
                         MessageBox.Show("Error reading file: " + ex.Message);
                     }
-                }
             }
         }
 
         private void CreateMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CreateForm createForm = new CreateForm();
-            bool? result = createForm.ShowDialog();
+            var createForm = new CreateForm();
+            var result = createForm.ShowDialog();
 
             if (result == true)
-            {
                 try
                 {
                     if (TreeView.SelectedItem is TreeViewItem item)
                     {
-                        string currentPath = item.Tag as string;
+                        var currentPath = item.Tag as string;
                         if (currentPath != null)
                         {
-                            string name = createForm.FileOrFolderName;
-                            bool isFolder = createForm.IsFolder;
-                            bool isReadOnly = createForm.IsReadOnly;
-                            bool isArchive = createForm.IsArchive;
-                            bool isHidden = createForm.IsHidden;
-                            bool isSystem = createForm.IsSystem;
+                            var name = createForm.FileOrFolderName;
+                            var isFolder = createForm.IsFolder;
+                            var isReadOnly = createForm.IsReadOnly;
+                            var isArchive = createForm.IsArchive;
+                            var isHidden = createForm.IsHidden;
+                            var isSystem = createForm.IsSystem;
 
-                            FileAttributes attributes = default(FileAttributes);
+                            var attributes = default(FileAttributes);
                             if (isReadOnly) attributes |= FileAttributes.ReadOnly;
                             if (isArchive) attributes |= FileAttributes.Archive;
                             if (isHidden) attributes |= FileAttributes.Hidden;
                             if (isSystem) attributes |= FileAttributes.System;
 
-                            string newItemPath = Path.Combine(currentPath, name);
-                            item.Items.Add(name);
+                            var newItemPath = Path.Combine(currentPath, name);
+
+                            if (Directory.Exists(newItemPath) || File.Exists(newItemPath))
+                                throw new InvalidOperationException("File or directory exits.");
+
                             if (isFolder)
                             {
                                 Directory.CreateDirectory(newItemPath);
@@ -207,26 +199,30 @@ namespace FileExplorer
                             }
                             else
                             {
-                                File.Create(newItemPath);
+                                var file = File.Create(newItemPath);
+                                file.Close();
                                 File.SetAttributes(newItemPath, attributes);
                             }
+
+                            var folderNode = new TreeViewItem();
+                            folderNode.Header = name;
+                            folderNode.Tag = newItemPath;
+                            item.Items.Add(folderNode);
                         }
                     }
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Error reading file: " + ex.Message);
+                    MessageBox.Show("Error writing file: " + ex.Message);
                 }
-            }
         }
 
         private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
         {
             if (TreeView.SelectedItem is TreeViewItem item && item.Parent is ItemsControl parent)
             {
-                string path = item.Tag as string;
+                var path = item.Tag as string;
                 if (path != null)
-                {
                     try
                     {
                         if (Directory.Exists(path))
@@ -249,13 +245,12 @@ namespace FileExplorer
                     {
                         MessageBox.Show("Error reading file: " + ex.Message);
                     }
-                }
             }
         }
 
         private string ConvertAttributesToString(FileAttributes attributes)
         {
-            string result = "";
+            var result = "";
 
             if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
                 result += "r";
