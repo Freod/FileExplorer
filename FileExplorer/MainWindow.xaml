@@ -3,17 +3,59 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileExplorer"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <DataTemplate DataType="{x:Type local:FileInfoViewModel}">
+            <TextBlock Text="{Binding Caption}" />
+        </DataTemplate>
+
+        <HierarchicalDataTemplate DataType="{x:Type local:DirectoryInfoViewModel}"
+                                  ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal">
+                <Image Width="16" Source="Resources/DirectoryIcon.png" />
+                <TextBlock Text="{Binding Caption}"
+                           Margin="10,0,0,0"
+                           FontWeight="Bold" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+
+        <Style x:Key="LangButtonStyle" TargetType="ToggleButton">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="BorderBrush" Value="Blue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <local:LangBoolConverter x:Key="LangBoolConverter" />
     </Window.Resources>
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}">
                 <MenuItem Header="_Open" Click="MenuOpen_Click" />
                 <MenuItem Header="_Exit" Click="MenuExit_Click" />
             </MenuItem>
+            <ToolBarPanel Orientation="Horizontal"
+                          Background="{x:Static SystemColors.ControlLightBrush}">
+                <ToggleButton x:Name="PolishLangugageButton"
+                              Style="{StaticResource LangButtonStyle}"
+                              IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},
+ConverterParameter=pl}">
+                        <Image Source="Resources/PL.png" Width="16" />
+                    </ToggleButton>
+                    <ToggleButton x:Name="EnglishLangugageButton"
+                                  Style="{StaticResource LangButtonStyle}"
+                                  IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},
+ConverterParameter=en}">
+                        <Image Source="Resources/EN.png" Width="16" />
+                    </ToggleButton>
+                    </ToolBarPanel>
+
         </Menu>
 
         <StatusBar DockPanel.Dock="Bottom">
@@ -29,8 +71,15 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Column="0" Name="TreeView"
-                      PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" />
+            <TreeView Grid.Column="0" x:Name="DiskTreeView" ItemsSource="{Binding Root.Items}" Margin="10" />
+            <!-- <TreeView.ItemTemplate> -->
+            <!-- <DataTemplate> -->
+            <!-- <TextBlock Text="{Binding Caption}" /> -->
+            <!-- </DataTemplate> -->
+            <!-- </TreeView.ItemTemplate> -->
+
+            <!-- <TreeView Grid.Column="0" Name="TreeView" -->
+            <!--           PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" /> -->
             <ScrollViewer Grid.Column="1" Margin="10">
                 <TextBlock Name="TextBlock" TextWrapping="Wrap" />
             </ScrollViewer>
