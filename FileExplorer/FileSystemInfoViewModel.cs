@@ -8,7 +8,9 @@ namespace FileExplorer
     {
         private string _caption;
         private FileSystemInfo _fileSystemInfo;
+
         private DateTime _lastWriteTime;
+        // private string _parentPath;
 
         public FileSystemInfo Model
         {
@@ -20,6 +22,8 @@ namespace FileExplorer
                     _fileSystemInfo = value;
                     LastWriteTime = value.LastWriteTime;
                     Caption = value.Name;
+                    // Path.value.FullName;
+                    // ParentPath;
                     OnPropertyChanged();
                 }
             }
@@ -50,5 +54,18 @@ namespace FileExplorer
                 }
             }
         }
+
+        // public string ParentPath
+        // {
+        //     get => _parentPath;
+        //     set
+        //     {
+        //         if (_parentPath != value)
+        //         {
+        //             _parentPath = value;
+        //             OnPropertyChanged();
+        //         }
+        //     }
+        // }
     }
 }

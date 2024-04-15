@@ -52,7 +52,7 @@ namespace FileExplorer
             if (e.PropertyName == nameof(FileBrowser.Lang))
                 CultureResources.ChangeCulture(CultureInfo.CurrentUICulture);
         }
-        
+
         // private void PopulateTreeView(string folderPath)
         // {
         //     var rootNode = new TreeViewItem();

@@ -1,10 +1,10 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <root>
     <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata" id="root"
                 xmlns="">
         <xsd:element name="root" msdata:IsDataSet="true">
-
+            
         </xsd:element>
     </xsd:schema>
     <resheader name="resmimetype">
@@ -24,12 +24,6 @@
         </value>
     </resheader>
     <data name="File" xml:space="preserve">
-        <value>File</value>
-    </data>
-    <data name="Open" xml:space="preserve">
-        <value>Open</value>
-    </data>
-    <data name="Exit" xml:space="preserve">
-        <value>Exit</value>
+        <value>Files</value>
     </data>
 </root>
