@@ -13,6 +13,7 @@ namespace FileExplorer
         private DateTime _lastAccessTime;
         private DateTime _lastAccessTimeUtc;
         private FileSystemInfo _fileSystemInfo;
+        private String _caption;
 
         public DateTime CreationTime
         {
@@ -74,6 +75,16 @@ namespace FileExplorer
             }
         }
 
+        public String Caption
+        {
+            get => _caption;
+            set
+            {
+                SetProperty(ref _caption, value);
+                OnPropertyChanged();
+            }
+        }
+
         public FileSystemInfo Model
         {
             get => _fileSystemInfo;
@@ -83,6 +94,7 @@ namespace FileExplorer
                 {
                     _fileSystemInfo = value;
                     LastWriteTime = value.LastWriteTime;
+                    Caption = value.Name;
                     OnPropertyChanged();
                 }
             }

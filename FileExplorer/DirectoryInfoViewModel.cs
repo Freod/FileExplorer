@@ -20,6 +20,7 @@ namespace FileExplorer
                 {
                     var dirInfo = new DirectoryInfo(dirName);
                     DirectoryInfoViewModel itemViewModel = new DirectoryInfoViewModel();
+                    itemViewModel.Open(dirName);
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
                 }
