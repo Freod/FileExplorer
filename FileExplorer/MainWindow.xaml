@@ -11,7 +11,8 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Header="_File">
-                <MenuItem Header="_Open" Click="MenuOpen_Click" />
+                <!-- <MenuItem Header="_Open" Click="MenuOpen_Click" /> -->
+                <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" />
                 <MenuItem Header="_Exit" Click="MenuExit_Click" />
             </MenuItem>
         </Menu>
@@ -29,8 +30,9 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
-            <TreeView Grid.Column="0" Name="TreeView"
-                      PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" />
+            <TreeView Grid.Column="0" x:Name="DiskTreeView" ItemsSource="{Binding Root.Items}" />
+            <!-- <TreeView Grid.Column="0" Name="TreeView" -->
+                      <!-- PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" /> -->
             <ScrollViewer Grid.Column="1" Margin="10">
                 <TextBlock Name="TextBlock" TextWrapping="Wrap" />
             </ScrollViewer>
