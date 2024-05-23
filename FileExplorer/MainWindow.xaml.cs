@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -19,9 +20,14 @@ namespace FileExplorer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly FileBrowser _fileBrowser;
+        
         public MainWindow()
         {
             InitializeComponent();
+            _fileBrowser = new FileBrowser();
+            DataContext = _fileBrowser;
+            _fileBrowser.PropertyChanged += FileExplorer_PropertyChanged;
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -29,15 +35,23 @@ namespace FileExplorer
             Application.Current.Shutdown();
         }
 
+        private void FileExplorer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(FileBrowser.Lang))
+            {
+                CultureResources.ChangeCulture(new CultureInfo(_fileBrowser.Lang));
+            }
+        }
+        
         private void OpenDirMenuItem_Click(object sender, RoutedEventArgs e)
         {
             var dlg = new FolderBrowserDialog() { Description = "Select directory to open" };
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var path = dlg.SelectedPath;
-                var fileBrowser = new FileBrowser();
-                fileBrowser.OpenRoot(path);
-                DataContext = fileBrowser;
+                // var fileBrowser = new FileBrowser();
+                _fileBrowser.OpenRoot(path);
+                // DataContext = fileBrowser;
             }
         }
 

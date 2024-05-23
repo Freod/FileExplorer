@@ -12,18 +12,60 @@
         </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type local:DirectoryInfoViewModel}"
                                   ItemsSource="{Binding Items}">
-            <TextBlock Text="{Binding Caption}" FontWeight="Bold" />
+            <StackPanel Orientation="Horizontal">
+                <Image Width="16" Height="16" Source="Resources/Images/DirectoryIcon.png" />
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" FontWeight="Bold" />
+            </StackPanel>
         </HierarchicalDataTemplate>
+        <Style x:Key="LangButtonStyle" TargetType="ToggleButton">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="BorderBrush" Value="Blue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <!-- <local:Strings x:Key="Strings" /> -->
+        <local:LangBoolConverter x:Key="LangBoolConverter" />
     </Window.Resources>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="_File">
-                <!-- <MenuItem Header="_Open" Click="MenuOpen_Click" /> -->
-                <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" />
-                <MenuItem Header="_Exit" Click="MenuExit_Click" />
-            </MenuItem>
-        </Menu>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <!-- <Menu DockPanel.Dock="Top"> -->
+            <Menu Grid.Column="0">
+                <!-- <MenuItem Header="_File"> -->
+                <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}">
+                    <!-- <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}"> -->
+                    <!-- <MenuItem Header="_Open" Click="MenuOpen_Click" /> -->
+                    <!-- <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" /> -->
+                    <!-- <MenuItem Header="_Exit" Click="MenuExit_Click" /> -->
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}" Click="OpenDirMenuItem_Click" />
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuExit_Click" />
+                </MenuItem>
+                <!-- <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}" /> -->
+            </Menu>
+
+            <!-- <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,10,0"> -->
+            <ToolBarPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,10,0">
+                <ToggleButton x:Name="PolishLangugageButton"
+                              Style="{StaticResource LangButtonStyle}"
+                              IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},ConverterParameter=pl}">
+                    <Image Source="Resources/Images/PL.png" Width="16" />
+                </ToggleButton>
+                <ToggleButton x:Name="EnglishLangugageButton"
+                              Style="{StaticResource LangButtonStyle}"
+                              IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},
+                    ConverterParameter=en}">
+                    <Image Source="Resources/Images/EN.png" Width="16" />
+                </ToggleButton>
+            </ToolBarPanel>
+        </Grid>
 
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>

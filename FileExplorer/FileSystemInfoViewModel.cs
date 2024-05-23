@@ -93,7 +93,12 @@ namespace FileExplorer
                 if (_fileSystemInfo != value)
                 {
                     _fileSystemInfo = value;
+                    CreationTime = value.CreationTime;
+                    CreationTimeUtc = value.CreationTimeUtc;
                     LastWriteTime = value.LastWriteTime;
+                    LastWriteTimeUtc = value.LastWriteTimeUtc;
+                    LastAccessTime = value.LastAccessTime;
+                    LastAccessTimeUtc = value.LastAccessTimeUtc;
                     Caption = value.Name;
                     OnPropertyChanged();
                 }
