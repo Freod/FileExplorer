@@ -120,7 +120,7 @@ namespace FileExplorer
             }
         }
 
-        private void HandleFileSystemDelete(string fullPath)
+        public void HandleFileSystemDelete(string fullPath)
         {
             Items.Remove(Items.FirstOrDefault(item => item.Model.FullName == fullPath));
         }

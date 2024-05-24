@@ -31,6 +31,11 @@
             </Style.Triggers>
         </Style>
         <local:LangBoolConverter x:Key="LangBoolConverter" />
+        <ContextMenu x:Key="TreeViewContextMenu">
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
+                      Click="CreateMenuItem_Click" />
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+        </ContextMenu>
     </Window.Resources>
 
     <DockPanel>
@@ -84,8 +89,16 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <!-- <TreeView Grid.Column="0" x:Name="DiskTreeView" ItemsSource="{Binding Root.Items}" /> -->
-            <TreeView x:Name="DiskTreeView"
-                      ItemsSource="{Binding Root.Items}" />
+            <TreeView x:Name="TreeView"
+                      ItemsSource="{Binding Root.Items}">
+                <!-- <ContextMenu x:Name="TreeViewContextMenu"> -->
+                <!--     <MenuItem x:Name="OpenFileMenuItem" -->
+                <!--               Header="{Binding Source={StaticResource Strings}, Path=Open}" -->
+                <!--               Command="{Binding OpenFileCommand}" CommandParameter="{Binding}" /> -->
+                <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Click="CreateMenuItem_Click" /> -->
+                <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" /> -->
+                <!-- </ContextMenu> -->
+            </TreeView>
             <!-- <TreeView Grid.Column="0" Name="TreeView" -->
             <!-- PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" /> -->
             <ScrollViewer Grid.Column="1" Margin="10">
