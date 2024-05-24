@@ -268,7 +268,7 @@ namespace FileExplorer
         //             }
         //     }
         // }
-        //
+        
         // private string ConvertAttributesToString(FileAttributes attributes)
         // {
         //     var result = "";
@@ -295,5 +295,7 @@ namespace FileExplorer
         //
         //     return result;
         // }
+        //
+        
     }
 }
