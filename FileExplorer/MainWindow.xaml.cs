@@ -44,12 +44,12 @@ namespace FileExplorer
 
         private void OpenDirMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new FolderBrowserDialog() { Description = Strings.Select_directory_to_open };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var path = dlg.SelectedPath;
-                _fileBrowser.OpenRoot(path);
-            }
+            // var dlg = new FolderBrowserDialog() { Description = Strings.Select_directory_to_open };
+            // if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            // {
+            //     var path = dlg.SelectedPath;
+            //     _fileBrowser.OpenRoot(path);
+            // }
         }
 
         private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)

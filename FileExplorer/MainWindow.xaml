@@ -53,9 +53,11 @@
                     <!-- <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" /> -->
                     <!-- <MenuItem Header="_Exit" Click="MenuExit_Click" /> -->
                     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}"
-                              Click="OpenDirMenuItem_Click" />
+                              Click="OpenDirMenuItem_Click" Command="{Binding OpenRootFolderCommand}"/>
                     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuExit_Click" />
                 </MenuItem>
+                <MenuItem Header="Sort" Command="{Binding SortRootFolderCommand}"/>
+                <!-- <MenuItem Header="Sort" Command="{Binding SortRootFolderCommand}"/> -->
                 <!-- <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}" /> -->
             </Menu>
 

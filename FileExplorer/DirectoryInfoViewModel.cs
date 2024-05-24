@@ -9,7 +9,7 @@ namespace FileExplorer
 {
     public class DirectoryInfoViewModel : FileSystemInfoViewModel
     {
-        public ObservableCollection<FileSystemInfoViewModel> Items { get; private set; }
+        public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
             = new ObservableCollection<FileSystemInfoViewModel>();
 
         public Exception Exception { get; private set; }
