@@ -85,5 +85,14 @@ namespace FileExplorer {
                 return ResourceManager.GetString("Open", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select directory to open.
+        /// </summary>
+        public static string Select_directory_to_open {
+            get {
+                return ResourceManager.GetString("Select directory to open", resourceCulture);
+            }
+        }
     }
 }

@@ -15,12 +15,9 @@ using Path = System.IO.Path;
 
 namespace FileExplorer
 {
-    /// <summary>
-    ///     Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly FileBrowser _fileBrowser;
+        private FileBrowser _fileBrowser;
         
         public MainWindow()
         {
@@ -45,13 +42,11 @@ namespace FileExplorer
         
         private void OpenDirMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            var dlg = new FolderBrowserDialog() { Description = "Select directory to open" };
+            var dlg = new FolderBrowserDialog() { Description = Strings.Select_directory_to_open };
             if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 var path = dlg.SelectedPath;
-                // var fileBrowser = new FileBrowser();
                 _fileBrowser.OpenRoot(path);
-                // DataContext = fileBrowser;
             }
         }
 

@@ -158,6 +158,11 @@
       <Resource Include="Resources\Images\EN.png" />
       <Resource Include="Resources\Images\PL.png" />
     </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\Images\file.png" />
+      <Resource Include="Resources\Images\imagefile.png" />
+      <Resource Include="Resources\Images\txt.png" />
+    </ItemGroup>
     <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
     <Import Project="..\packages\CommunityToolkit.Mvvm.8.2.2\build\netstandard2.0\CommunityToolkit.Mvvm.targets" Condition="Exists('..\packages\CommunityToolkit.Mvvm.8.2.2\build\netstandard2.0\CommunityToolkit.Mvvm.targets')" />
     <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

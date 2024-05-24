@@ -8,7 +8,10 @@
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
         <DataTemplate DataType="{x:Type local:FileInfoViewModel}">
-            <TextBlock Text="{Binding Caption}" />
+            <StackPanel Orientation="Horizontal">
+                <Image Width="16" Height="16" Source="{Binding Icon}" />
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" />
+            </StackPanel>
         </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type local:DirectoryInfoViewModel}"
                                   ItemsSource="{Binding Items}">
@@ -27,7 +30,6 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-        <!-- <local:Strings x:Key="Strings" /> -->
         <local:LangBoolConverter x:Key="LangBoolConverter" />
     </Window.Resources>
 
@@ -45,7 +47,8 @@
                     <!-- <MenuItem Header="_Open" Click="MenuOpen_Click" /> -->
                     <!-- <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" /> -->
                     <!-- <MenuItem Header="_Exit" Click="MenuExit_Click" /> -->
-                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}" Click="OpenDirMenuItem_Click" />
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}"
+                              Click="OpenDirMenuItem_Click" />
                     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuExit_Click" />
                 </MenuItem>
                 <!-- <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}" /> -->

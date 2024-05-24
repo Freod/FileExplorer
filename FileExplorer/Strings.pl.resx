@@ -20,4 +20,7 @@
     <data name="Exit" xml:space="preserve">
         <value>Wyjdź</value>
     </data>
+    <data name="Select directory to open" xml:space="preserve">
+        <value>Wybierz folder do otwarcia</value>
+    </data>
 </root>

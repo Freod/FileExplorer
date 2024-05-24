@@ -16,7 +16,7 @@ namespace FileExplorer
                     if (CultureInfo.CurrentUICulture.TwoLetterISOLanguageName != value)
                     {
                         CultureInfo.CurrentUICulture = new CultureInfo(value);
-                        OnPropertyChanged(nameof(Lang));
+                        OnPropertyChanged();
                     }
             }
         }
@@ -30,6 +30,7 @@ namespace FileExplorer
         {
             Root = new DirectoryInfoViewModel();
             Root.Open(path);
+            OnPropertyChanged(nameof(Root));
         }
     }
 }
