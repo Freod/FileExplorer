@@ -24,9 +24,12 @@ namespace FileExplorer
             InitializeComponent();
             _fileBrowser = new FileBrowser();
             DataContext = _fileBrowser;
-            _fileBrowser.PropertyChanged += FileExplorer_PropertyChanged;
+            _fileBrowser.PropertyChanged += FileBrowser_PropertyChanged;
             TreeView.SelectedItemChanged += TreeView_SelectedItemChanged;
             // TreeView.PreviewMouseRightButtonDown += TreeView_PreviewMouseRightButtonDown;
+            _fileBrowser.OnOpenFileRequest += FileBrowser_OnOpenFileRequest;
+
+            
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -34,7 +37,7 @@ namespace FileExplorer
             Application.Current.Shutdown();
         }
 
-        private void FileExplorer_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void FileBrowser_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(FileBrowser.Lang))
             {
@@ -238,5 +241,16 @@ namespace FileExplorer
 
             return result;
         }
+        
+        private void FileBrowser_OnOpenFileRequest(object sender, FileInfoViewModel viewModel)
+        {
+            var content = _fileBrowser.GetFileContent(viewModel);
+            if (content is string text)
+            {
+                var textView = new TextBlock { Text = text };
+                TextPreviewScrollViewer.Content = textView;
+            }
+        }
+
     }
 }

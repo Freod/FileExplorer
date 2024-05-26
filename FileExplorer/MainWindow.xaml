@@ -12,11 +12,16 @@
                       Header="{Binding Source={StaticResource Strings}, Path=Open}"
                       Command="{Binding OpenFileCommand}" CommandParameter="{Binding}" />
         </ContextMenu>
-        
         <DataTemplate DataType="{x:Type local:FileInfoViewModel}">
             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
                 <Image Width="16" Height="16" Source="{Binding Icon}" />
-                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" />
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0">
+                    <TextBlock.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick"
+                                      Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                      CommandParameter="{Binding}" />
+                    </TextBlock.InputBindings>
+                </TextBlock>
             </StackPanel>
         </DataTemplate>
         <HierarchicalDataTemplate DataType="{x:Type local:DirectoryInfoViewModel}"
@@ -94,12 +99,14 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" MinWidth="150"/>
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
             <!-- <TreeView Grid.Column="0" x:Name="DiskTreeView" ItemsSource="{Binding Root.Items}" /> -->
             <TreeView x:Name="TreeView"
-                      ItemsSource="{Binding Root.Items}">
+                      ItemsSource="{Binding Root.Items}" >
+                
+            </TreeView>
                 <!-- <ContextMenu x:Name="TreeViewContextMenu"> -->
                 <!--     <MenuItem x:Name="OpenFileMenuItem" -->
                 <!--               Header="{Binding Source={StaticResource Strings}, Path=Open}" -->
@@ -107,11 +114,11 @@
                 <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Click="CreateMenuItem_Click" /> -->
                 <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" /> -->
                 <!-- </ContextMenu> -->
-            </TreeView>
+            
             <!-- <TreeView Grid.Column="0" Name="TreeView" -->
             <!-- PreviewMouseRightButtonDown="treeView_PreviewMouseRightButtonDown" Margin="10" /> -->
-            <ScrollViewer Grid.Column="1" Margin="10">
-                <TextBlock Name="TextBlock" TextWrapping="Wrap" />
+            <ScrollViewer Grid.Column="1" Margin="10" x:Name="TextPreviewScrollViewer">
+                <!-- <TextBlock Name="TextBlock" TextWrapping="Wrap" /> -->
             </ScrollViewer>
         </Grid>
     </DockPanel>

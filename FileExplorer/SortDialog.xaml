@@ -6,20 +6,18 @@
         xmlns:local="clr-namespace:FileExplorer"
         xmlns:sorting="clr-namespace:FileExplorer.Sorting"
         mc:Ignorable="d"
-        Title="SortDialog" Height="230" Width="300">
+        Title="SortDialog" Height="300" Width="300">
     <Window.Resources>
         <sorting:SortByToBoolConverter x:Key="SortByToBoolConverter" />
         <sorting:DirectionToBoolConverter x:Key="DirectionToBoolConverter" />
+        <Style x:Key="{x:Type RadioButton}" TargetType="{x:Type RadioButton}">
+            <Setter Property="Margin" Value="5" />
+        </Style>
     </Window.Resources>
     <Grid>
-        <!--TODO styli zadeklarowanych w zasobach okna dialogu-->
         <StackPanel Margin="10">
             <GroupBox Header="Sort by">
                 <StackPanel>
-                    <!-- <RadioButton GroupName="SortBy" Content="Name" Name="Name" IsChecked="True" /> -->
-                    <!-- <RadioButton GroupName="SortBy" Content="Extension" Name="Extension" /> -->
-                    <!-- <RadioButton GroupName="SortBy" Content="Size" Name="Size" /> -->
-                    <!-- <RadioButton GroupName="SortBy" Content="Last Modified Date" Name="Date" /> -->
                     <RadioButton Content="Name" Name="NameRadioButton"
                                  IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=N}" />
                     <RadioButton Content="Extension" Name="ExtensionRadioButton"
@@ -30,10 +28,8 @@
                                  IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=D}" />
                 </StackPanel>
             </GroupBox>
-            <GroupBox Header="Sort order">
+            <GroupBox Header="Sort order" Margin="0,10,0,0">
                 <StackPanel>
-                    <!-- <RadioButton GroupName="SortOrder" Content="Ascending" Name="Ascending" IsChecked="True" /> -->
-                    <!-- <RadioButton GroupName="SortOrder" Content="Descending" Name="Descending" /> -->
                     <RadioButton Content="Ascending" Name="AscendingRadioButton"
                                  IsChecked="{Binding Direction, Converter={StaticResource DirectionToBoolConverter}, ConverterParameter=A}" />
                     <RadioButton Content="Descending" Name="DescendingRadioButton"

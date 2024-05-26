@@ -19,6 +19,11 @@ namespace FileExplorer
         private String _caption;
         private ImageSource _icon;
 
+        public FileSystemInfoViewModel(ObservableRecipient owner)
+        {
+            Owner = owner;
+        }
+
         public DateTime CreationTime
         {
             get => _creationTime;
@@ -137,6 +142,24 @@ namespace FileExplorer
             }
 
             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
+        }
+
+        public ObservableRecipient Owner { get; private set; }
+
+        public FileBrowser OwnerExplorer
+        {
+            get
+            {
+                var owner = Owner;
+                while (owner is DirectoryInfoViewModel ownerDirectory)
+                {
+                    if (ownerDirectory.Owner is FileBrowser explorer)
+                        return explorer;
+                    owner = ownerDirectory.Owner;
+                }
+
+                return null;
+            }
         }
     }
 }

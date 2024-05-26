@@ -1,22 +1,25 @@
+using CommunityToolkit.Mvvm.ComponentModel;
+
 namespace FileExplorer
 {
     public class FileInfoViewModel : FileSystemInfoViewModel
     {
-        public FileInfoViewModel()
+        public FileInfoViewModel(ObservableRecipient owner): base(owner)
         {
-            OpenFileCommand = new RelayCommand(OpenFileCommandExecute, CanOpenFileCommandExecute);
+            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
         }
 
         public RelayCommand OpenFileCommand { get; set; }
 
-        private void OpenFileCommandExecute(object parameter)
+        private void OpenFileExecute(object parameter)
         {
-            int y;
+            OwnerExplorer.OpenFileCommand.Execute(parameter);
         }
 
-        private bool CanOpenFileCommandExecute(object parameter)
+        private bool OpenFileCanExecute(object parameter)
         {
-            return true;
+            // return true;
+            return OwnerExplorer.OpenFileCommand.CanExecute(parameter);
         }
     }
 }

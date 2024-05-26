@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Xml.Linq;
+using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace FileExplorer
 {
@@ -17,6 +18,10 @@ namespace FileExplorer
         private string _initialPath;
         private FileSystemWatcher _watcher;
 
+        public DirectoryInfoViewModel(ObservableRecipient owner) : base(owner)
+        {
+        }
+
         public bool Open(string path)
         {
             _initialPath = path;
@@ -26,7 +31,7 @@ namespace FileExplorer
                 foreach (var dirName in Directory.GetDirectories(path))
                 {
                     var dirInfo = new DirectoryInfo(dirName);
-                    DirectoryInfoViewModel itemViewModel = new DirectoryInfoViewModel();
+                    DirectoryInfoViewModel itemViewModel = new DirectoryInfoViewModel(this);
                     itemViewModel.Open(dirName);
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
@@ -35,7 +40,7 @@ namespace FileExplorer
                 foreach (var fileName in Directory.GetFiles(path))
                 {
                     var fileInfo = new FileInfo(fileName);
-                    FileInfoViewModel itemViewModel = new FileInfoViewModel();
+                    FileInfoViewModel itemViewModel = new FileInfoViewModel(this);
                     itemViewModel.Model = fileInfo;
                     Items.Add(itemViewModel);
                 }
@@ -106,7 +111,7 @@ namespace FileExplorer
             if (Directory.Exists(fullPath))
             {
                 var dirInfo = new DirectoryInfo(fullPath);
-                DirectoryInfoViewModel itemViewModel = new DirectoryInfoViewModel();
+                DirectoryInfoViewModel itemViewModel = new DirectoryInfoViewModel(this);
                 itemViewModel.Open(fullPath);
                 itemViewModel.Model = dirInfo;
                 Items.Add(itemViewModel);
@@ -114,7 +119,7 @@ namespace FileExplorer
             else if (File.Exists(fullPath))
             {
                 var fileInfo = new FileInfo(fullPath);
-                FileInfoViewModel itemViewModel = new FileInfoViewModel();
+                FileInfoViewModel itemViewModel = new FileInfoViewModel(this);
                 itemViewModel.Model = fileInfo;
                 Items.Add(itemViewModel);
             }

@@ -1,5 +1,7 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -8,6 +10,19 @@ namespace FileExplorer
 {
     public class FileBrowser : ObservableRecipient
     {
+        public FileBrowser()
+        {
+            // Root = new DirectoryInfoViewModel(Owner);
+            OnPropertyChanged(nameof(Lang));
+            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
+            SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, CanSortRootFolderExecute);
+            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
+            // SortRootFolderCommand = new RelayCommand(
+            //     execute: SortRootFolder,
+            //     canExecute: CanSortRootFolder
+            // );
+        }
+        
         public DirectoryInfoViewModel Root { get; set; }
 
         public string Lang
@@ -23,22 +38,10 @@ namespace FileExplorer
                     }
             }
         }
-
-        public FileBrowser()
-        {
-            // Root = new DirectoryInfoViewModel(Owner);
-            OnPropertyChanged(nameof(Lang));
-            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
-            SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, CanSortRootFolderExecute);
-            // SortRootFolderCommand = new RelayCommand(
-            //     execute: SortRootFolder,
-            //     canExecute: CanSortRootFolder
-            // );
-        }
-
+        
         public void OpenRoot(string path)
         {
-            Root = new DirectoryInfoViewModel();
+            Root = new DirectoryInfoViewModel(this);
             Root.Open(path);
             OnPropertyChanged(nameof(Root));
         }
@@ -46,6 +49,60 @@ namespace FileExplorer
         public RelayCommand OpenRootFolderCommand { get; private set; }
 
         public RelayCommand SortRootFolderCommand { get; private set; }
+        
+        public RelayCommand OpenFileCommand { get; private set; }
+        
+        public static readonly string[] TextFilesExtensions = new string[] { ".txt", ".ini", ".log" };
+
+        
+        private bool OpenFileCanExecute(object parameter)
+        {
+            if (parameter is FileInfoViewModel viewModel)
+            {
+                var extension = viewModel.Model.Extension?.ToLower();
+                return TextFilesExtensions.Contains(extension);
+            }
+            return false;
+        }
+        
+        private void OpenFileExecute(object parameter)
+        {
+            if (parameter is FileInfoViewModel fileInfoViewModel)
+            {
+                OnOpenFileRequest?.Invoke(this, fileInfoViewModel);
+            }
+        }
+
+        public event EventHandler<FileInfoViewModel> OnOpenFileRequest;
+
+        public object GetFileContent(FileInfoViewModel viewModel)
+        {
+            var extension = viewModel.Model.Extension?.ToLower();
+            if (TextFilesExtensions.Contains(extension))
+            {
+                return GetTextFileContent(viewModel);
+            }
+            return null;
+        }
+
+        private object GetTextFileContent(FileInfoViewModel viewModel)
+        {
+            if (viewModel.Model is FileInfo fileInfo)
+            {
+                try
+                {
+                    string content = File.ReadAllText(fileInfo.FullName);
+                    return content;
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"{Strings.File_reading_error}: {ex.Message}");
+                }
+            }
+
+            return string.Empty;
+        }
+
 
         private void OpenRootFolderExecute(object parameter)
         {
