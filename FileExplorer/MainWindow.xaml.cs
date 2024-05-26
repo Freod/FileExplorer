@@ -26,7 +26,7 @@ namespace FileExplorer
             DataContext = _fileBrowser;
             _fileBrowser.PropertyChanged += FileExplorer_PropertyChanged;
             TreeView.SelectedItemChanged += TreeView_SelectedItemChanged;
-            TreeView.PreviewMouseRightButtonDown += TreeView_PreviewMouseRightButtonDown;
+            // TreeView.PreviewMouseRightButtonDown += TreeView_PreviewMouseRightButtonDown;
         }
 
         private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -57,7 +57,7 @@ namespace FileExplorer
             if (TreeView.SelectedItem is FileSystemInfoViewModel item)
             {
                 AttributesTextBlock.Text = GetFileAttributes(item.Model.Attributes);
-                TextBlock.Text = GetFileContent(item);
+                // TextBlock.Text = GetFileContent(item);
             }
         }
 
@@ -92,39 +92,39 @@ namespace FileExplorer
             return string.Empty;
         }
 
-        private void TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            if (TreeView.SelectedItem is FileSystemInfoViewModel item)
-            {
-                try
-                {
-                    var contextMenu = FindResource("TreeViewContextMenu") as ContextMenu;
-                    if (contextMenu != null)
-                    {
-                        if (item is DirectoryInfoViewModel)
-                        {
-                            var createMenuItem = contextMenu.Items.OfType<MenuItem>()
-                                .FirstOrDefault(m => m.Name == "CreateMenuItem");
-                            if (createMenuItem != null) createMenuItem.Visibility = Visibility.Visible;
-                        }
-                        else
-                        {
-                            var createMenuItem = contextMenu.Items.OfType<MenuItem>()
-                                .FirstOrDefault(m => m.Name == "CreateMenuItem");
-                            if (createMenuItem != null) createMenuItem.Visibility = Visibility.Collapsed;
-                        }
-
-                        contextMenu.PlacementTarget = sender as UIElement;
-                        contextMenu.IsOpen = true;
-                        e.Handled = true;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"{Strings.File_reading_error}: {ex.Message}");
-                }
-            }
-        }
+        // private void TreeView_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        // {
+        //     if (TreeView.SelectedItem is FileSystemInfoViewModel item)
+        //     {
+        //         try
+        //         {
+        //             var contextMenu = FindResource("TreeViewContextMenu") as ContextMenu;
+        //             if (contextMenu != null)
+        //             {
+        //                 if (item is DirectoryInfoViewModel)
+        //                 {
+        //                     var createMenuItem = contextMenu.Items.OfType<MenuItem>()
+        //                         .FirstOrDefault(m => m.Name == "CreateMenuItem");
+        //                     if (createMenuItem != null) createMenuItem.Visibility = Visibility.Visible;
+        //                 }
+        //                 else
+        //                 {
+        //                     var createMenuItem = contextMenu.Items.OfType<MenuItem>()
+        //                         .FirstOrDefault(m => m.Name == "CreateMenuItem");
+        //                     if (createMenuItem != null) createMenuItem.Visibility = Visibility.Collapsed;
+        //                 }
+        //
+        //                 contextMenu.PlacementTarget = sender as UIElement;
+        //                 contextMenu.IsOpen = true;
+        //                 e.Handled = true;
+        //             }
+        //         }
+        //         catch (Exception ex)
+        //         {
+        //             MessageBox.Show($"{Strings.File_reading_error}: {ex.Message}");
+        //         }
+        //     }
+        // }
 
         private void CreateMenuItem_Click(object sender, RoutedEventArgs e)
         {

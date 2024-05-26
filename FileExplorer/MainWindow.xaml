@@ -7,8 +7,14 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Window.Resources>
+        <ContextMenu x:Key="FileContextMenu">
+            <MenuItem x:Name="OpenFileMenuItem"
+                      Header="{Binding Source={StaticResource Strings}, Path=Open}"
+                      Command="{Binding OpenFileCommand}" CommandParameter="{Binding}" />
+        </ContextMenu>
+        
         <DataTemplate DataType="{x:Type local:FileInfoViewModel}">
-            <StackPanel Orientation="Horizontal">
+            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
                 <Image Width="16" Height="16" Source="{Binding Icon}" />
                 <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" />
             </StackPanel>
@@ -31,11 +37,12 @@
             </Style.Triggers>
         </Style>
         <local:LangBoolConverter x:Key="LangBoolConverter" />
-        <ContextMenu x:Key="TreeViewContextMenu">
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
-                      Click="CreateMenuItem_Click" />
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
-        </ContextMenu>
+
+        <!-- <ContextMenu x:Key="TreeViewContextMenu"> -->
+        <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem" -->
+        <!--               Click="CreateMenuItem_Click" /> -->
+        <!--     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" /> -->
+        <!-- </ContextMenu> -->
     </Window.Resources>
 
     <DockPanel>
@@ -53,10 +60,10 @@
                     <!-- <MenuItem Header="_Open" Click="OpenDirMenuItem_Click" /> -->
                     <!-- <MenuItem Header="_Exit" Click="MenuExit_Click" /> -->
                     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}"
-                              Click="OpenDirMenuItem_Click" Command="{Binding OpenRootFolderCommand}"/>
+                              Click="OpenDirMenuItem_Click" Command="{Binding OpenRootFolderCommand}" />
                     <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuExit_Click" />
                 </MenuItem>
-                <MenuItem Header="Sort" Command="{Binding SortRootFolderCommand}"/>
+                <MenuItem Header="Sort" Command="{Binding SortRootFolderCommand}" />
                 <!-- <MenuItem Header="Sort" Command="{Binding SortRootFolderCommand}"/> -->
                 <!-- <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}" /> -->
             </Menu>
