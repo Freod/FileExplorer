@@ -12,6 +12,35 @@ namespace FileExplorer
     {
         public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
             = new ObservableCollection<FileSystemInfoViewModel>();
+        
+        private int _count;
+
+        public int Count
+        {
+            get => _count;
+            set
+            {
+                if (_count != value)
+                {
+                    _count = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        private bool _isExpanded;
+
+        public bool IsExpanded
+        {
+            get => _isExpanded;
+            set
+            {
+                if (_isExpanded != value)
+                {
+                    _isExpanded = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public Exception Exception { get; private set; }
 
@@ -128,6 +157,20 @@ namespace FileExplorer
         public void HandleFileSystemDelete(string fullPath)
         {
             Items.Remove(Items.FirstOrDefault(item => item.Model.FullName == fullPath));
+        }
+        
+        public new DirectoryInfo Model
+        {
+            get => (DirectoryInfo)base.Model;
+            set
+            {
+                if (base.Model != value)
+                {
+                    base.Model = value;
+                    Count = value.GetFileSystemInfos().Length; // example of additional property logic
+                    OnPropertyChanged();
+                }
+            }
         }
     }
 }

@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Sorting;
 
 namespace FileExplorer
 {
@@ -129,8 +131,9 @@ namespace FileExplorer
                 if (result == true)
                 {
                     var options = sortDialog.Options;
+                    Sort(options);
                 }
-
+                
                 // Root.Items = new ObservableCollection<FileSystemInfoViewModel>(
                 //     Root.Items.OrderBy(item => item.Model.GetType().Name).Reverse()
                 // );
@@ -145,6 +148,7 @@ namespace FileExplorer
 
         // private void SortFolder(FileSystemInfoViewModel folder)
         // {
+        //
         //     folder.Items = new ObservableCollection<FileSystemInfoViewModel>(
         //         folder.Items.OrderBy(item => item.Model.GetType().Name)
         //     );
@@ -154,5 +158,48 @@ namespace FileExplorer
         //         SortFolder(item.Model);
         //     }
         // }
+        
+        public void Sort(SortingOptions sortingOptions)
+        {
+            SortItems(Root.Items, sortingOptions);
+        }
+
+        private void SortItems(ObservableCollection<FileSystemInfoViewModel> items, SortingOptions sortingOptions)
+        {
+            var directories = items.OfType<DirectoryInfoViewModel>().ToList();
+            var files = items.OfType<FileInfoViewModel>().ToList();
+            
+            directories.Sort(new DirectoryInfoViewModelComparer(sortingOptions.SortBy, sortingOptions.Direction));
+            files.Sort(new FileInfoViewModelComparer(sortingOptions.SortBy, sortingOptions.Direction));
+
+            var sortedItems = new List<FileSystemInfoViewModel>();
+
+            foreach (var directory in directories)
+            {
+                sortedItems.Add(directory);
+                if (directory.Items.Any())
+                {
+                    SortItems(directory.Items, sortingOptions);
+                }
+            }
+            
+            sortedItems.AddRange(files);
+            
+            for (int i = 0; i < sortedItems.Count; i++)
+            {
+                if (items[i] != sortedItems[i])
+                {
+                    int oldIndex = items.IndexOf(sortedItems[i]);
+                    if (oldIndex >= 0)
+                    {
+                        items.Move(oldIndex, i);
+                    }
+                    else
+                    {
+                        items.Insert(i, sortedItems[i]);
+                    }
+                }
+            }
+        }
     }
 }

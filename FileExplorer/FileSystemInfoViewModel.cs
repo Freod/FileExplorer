@@ -18,7 +18,7 @@ namespace FileExplorer
         private FileSystemInfo _fileSystemInfo;
         private String _caption;
         private ImageSource _icon;
-
+        
         public FileSystemInfoViewModel(ObservableRecipient owner)
         {
             Owner = owner;

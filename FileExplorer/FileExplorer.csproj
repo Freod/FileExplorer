@@ -90,6 +90,8 @@
         </Compile>
         <Compile Include="Sorting\Direction.cs" />
         <Compile Include="Sorting\DirectionToBoolConverter.cs" />
+        <Compile Include="Sorting\DirectoryInfoViewModelComparer.cs" />
+        <Compile Include="Sorting\FileInfoViewModelComparer.cs" />
         <Compile Include="Sorting\SortBy.cs" />
         <Compile Include="Sorting\SortByToBoolConverter.cs" />
         <Compile Include="Sorting\SortingOptions.cs" />
