@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Windows.Input;
 
-namespace FileExplorer
+namespace FileExplorer.ViewModels
 {
     public class RelayCommand : ICommand
     {

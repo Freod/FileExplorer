@@ -1,4 +1,4 @@
-﻿namespace FileExplorer.Sorting
+﻿namespace FileExplorer.Models
 {
     public enum Direction
     {

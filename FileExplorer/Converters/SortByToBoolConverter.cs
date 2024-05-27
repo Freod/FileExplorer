@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
+using FileExplorer.Models;
 
-namespace FileExplorer.Sorting
+namespace FileExplorer.Converters
 {
     public class SortByToBoolConverter : IValueConverter
     {

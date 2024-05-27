@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace FileExplorer
+namespace FileExplorer.Views
 {
     /// <summary>
     ///     Interaction logic for CreateForm.xaml

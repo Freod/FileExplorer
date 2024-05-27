@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer.Sorting
+namespace FileExplorer.Models
 {
     public class SortingOptions: ObservableRecipient
     {

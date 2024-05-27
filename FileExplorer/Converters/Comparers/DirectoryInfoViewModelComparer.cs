@@ -1,20 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using FileExplorer.Models;
+using FileExplorer.ViewModels;
 
-namespace FileExplorer.Sorting
+namespace FileExplorer.Converters.Comparers
 {
-    public class FileInfoViewModelComparer: IComparer<FileInfoViewModel>
+    public class DirectoryInfoViewModelComparer: IComparer<DirectoryInfoViewModel>
     {
         private readonly SortBy _sortBy;
         private readonly Direction _direction;
 
-        public FileInfoViewModelComparer(SortBy sortBy, Direction direction)
+        public DirectoryInfoViewModelComparer(SortBy sortBy, Direction direction)
         {
             _sortBy = sortBy;
             _direction = direction;
         }
 
-        public int Compare(FileInfoViewModel x, FileInfoViewModel y)
+        public int Compare(DirectoryInfoViewModel x, DirectoryInfoViewModel y)
         {
             int result;
             switch (_sortBy)
@@ -22,14 +24,11 @@ namespace FileExplorer.Sorting
                 case SortBy.Name:
                     result = string.Compare(x.Caption, y.Caption);
                     break;
-                case SortBy.Extension:
-                    result = string.Compare(x.Extension, y.Extension);
-                    break;
                 case SortBy.Date:
                     result = DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
                     break;
                 case SortBy.Size:
-                    result = x.Size.CompareTo(y.Size);
+                    result = x.Count.CompareTo(y.Count);
                     break;
                 default:
                     result = 0;

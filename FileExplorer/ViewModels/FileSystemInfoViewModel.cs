@@ -1,11 +1,10 @@
 using System;
 using System.IO;
-using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer
+namespace FileExplorer.ViewModels
 {
     public class FileSystemInfoViewModel : ObservableRecipient
     {
@@ -18,11 +17,6 @@ namespace FileExplorer
         private FileSystemInfo _fileSystemInfo;
         private String _caption;
         private ImageSource _icon;
-        
-        public FileSystemInfoViewModel(ObservableRecipient owner)
-        {
-            Owner = owner;
-        }
 
         public DateTime CreationTime
         {
@@ -103,7 +97,7 @@ namespace FileExplorer
                 OnPropertyChanged();
             }
         }
-
+        
         public FileSystemInfo Model
         {
             get => _fileSystemInfo;
@@ -123,6 +117,29 @@ namespace FileExplorer
                     OnPropertyChanged();
                 }
             }
+        }
+        
+        protected FileBrowser OwnerExplorer
+        {
+            get
+            {
+                var owner = Owner;
+                while (owner is DirectoryInfoViewModel ownerDirectory)
+                {
+                    if (ownerDirectory.Owner is FileBrowser explorer)
+                        return explorer;
+                    owner = ownerDirectory.Owner;
+                }
+
+                return null;
+            }
+        }
+        
+        private ObservableRecipient Owner { get; set; }
+
+        protected FileSystemInfoViewModel(ObservableRecipient owner)
+        {
+            Owner = owner;
         }
 
         private ImageSource GetIconForFileType(FileSystemInfo file)
@@ -144,22 +161,7 @@ namespace FileExplorer
             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
         }
 
-        public ObservableRecipient Owner { get; private set; }
 
-        public FileBrowser OwnerExplorer
-        {
-            get
-            {
-                var owner = Owner;
-                while (owner is DirectoryInfoViewModel ownerDirectory)
-                {
-                    if (ownerDirectory.Owner is FileBrowser explorer)
-                        return explorer;
-                    owner = ownerDirectory.Owner;
-                }
-
-                return null;
-            }
-        }
+        
     }
 }

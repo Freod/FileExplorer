@@ -1,7 +1,7 @@
 ﻿using System.Windows;
-using FileExplorer.Sorting;
+using FileExplorer.Models;
 
-namespace FileExplorer
+namespace FileExplorer.Views
 {
     public partial class SortDialog : Window
     {

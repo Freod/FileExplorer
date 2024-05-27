@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 
-namespace FileExplorer
+namespace FileExplorer.Converters
 {
     public class LangBoolConverter : IValueConverter
     {
@@ -15,7 +15,7 @@ namespace FileExplorer
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if ((bool)value == true)
+            if ((bool)value)
                 return (string)parameter;
             return null;
         }

@@ -1,15 +1,10 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
 
-namespace FileExplorer
+namespace FileExplorer.Resources
 {
     public class CultureResources
     {
-        public Strings GetStringsInstance()
-        {
-            return new Strings();
-        }
-
         private static ObjectDataProvider _provider;
 
         public static ObjectDataProvider ResourceProvider
@@ -17,10 +12,14 @@ namespace FileExplorer
             get
             {
                 if (_provider == null)
-                    _provider =
-                        (ObjectDataProvider)System.Windows.Application.Current.FindResource("Strings");
+                    _provider = System.Windows.Application.Current.FindResource("Strings") as ObjectDataProvider;
                 return _provider;
             }
+        }
+
+        public Strings GetStringsInstance()
+        {
+            return new Strings();
         }
 
         public static void ChangeCulture(CultureInfo culture)

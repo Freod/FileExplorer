@@ -3,17 +3,17 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Xml.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer
+namespace FileExplorer.ViewModels
 {
     public class DirectoryInfoViewModel : FileSystemInfoViewModel
     {
+        private FileSystemWatcher _watcher;
+        private int _count;
+
         public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
             = new ObservableCollection<FileSystemInfoViewModel>();
-        
-        private int _count;
 
         public int Count
         {
@@ -27,33 +27,29 @@ namespace FileExplorer
                 }
             }
         }
-        private bool _isExpanded;
 
-        public bool IsExpanded
+        public Exception Exception { get; private set; }
+
+        public new DirectoryInfo Model
         {
-            get => _isExpanded;
+            get => (DirectoryInfo)base.Model;
             set
             {
-                if (_isExpanded != value)
+                if (base.Model != value)
                 {
-                    _isExpanded = value;
+                    base.Model = value;
+                    Count = value.GetFileSystemInfos().Length; // example of additional property logic
                     OnPropertyChanged();
                 }
             }
         }
-
-        public Exception Exception { get; private set; }
-
-        private string _initialPath;
-        private FileSystemWatcher _watcher;
-
+        
         public DirectoryInfoViewModel(ObservableRecipient owner) : base(owner)
         {
         }
 
         public bool Open(string path)
         {
-            _initialPath = path;
             bool result = false;
             try
             {
@@ -106,13 +102,12 @@ namespace FileExplorer
             switch (e.ChangeType)
             {
                 case WatcherChangeTypes.Created:
-                    HandleFileSystemCreate(e.FullPath, e.Name);
+                    HandleFileSystemCreate(e.FullPath);
                     break;
                 case WatcherChangeTypes.Deleted:
                     HandleFileSystemDelete(e.FullPath);
                     break;
                 case WatcherChangeTypes.Changed:
-                    // Obsługa zmiany pliku, jeżeli jest to wymagane
                     break;
                 case WatcherChangeTypes.Renamed:
 
@@ -120,7 +115,7 @@ namespace FileExplorer
                     if (renamedEvent != null)
                     {
                         HandleFileSystemDelete(renamedEvent.OldFullPath);
-                        HandleFileSystemCreate(renamedEvent.FullPath, renamedEvent.Name);
+                        HandleFileSystemCreate(renamedEvent.FullPath);
                     }
 
                     break;
@@ -135,7 +130,7 @@ namespace FileExplorer
             });
         }
 
-        private void HandleFileSystemCreate(string fullPath, string name)
+        private void HandleFileSystemCreate(string fullPath)
         {
             if (Directory.Exists(fullPath))
             {
@@ -154,23 +149,9 @@ namespace FileExplorer
             }
         }
 
-        public void HandleFileSystemDelete(string fullPath)
+        private void HandleFileSystemDelete(string fullPath)
         {
             Items.Remove(Items.FirstOrDefault(item => item.Model.FullName == fullPath));
-        }
-        
-        public new DirectoryInfo Model
-        {
-            get => (DirectoryInfo)base.Model;
-            set
-            {
-                if (base.Model != value)
-                {
-                    base.Model = value;
-                    Count = value.GetFileSystemInfos().Length; // example of additional property logic
-                    OnPropertyChanged();
-                }
-            }
         }
     }
 }

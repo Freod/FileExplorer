@@ -69,6 +69,15 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Ascending.
+        /// </summary>
+        public static string Ascending {
+            get {
+                return ResourceManager.GetString("Ascending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attributes.
         /// </summary>
         public static string Attributes {
@@ -105,6 +114,15 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Descending.
+        /// </summary>
+        public static string Descending {
+            get {
+                return ResourceManager.GetString("Descending", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
         public static string Error {
@@ -119,6 +137,15 @@ namespace FileExplorer {
         public static string Exit {
             get {
                 return ResourceManager.GetString("Exit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Extension.
+        /// </summary>
+        public static string Extension {
+            get {
+                return ResourceManager.GetString("Extension", resourceCulture);
             }
         }
         
@@ -159,6 +186,24 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last Modified Date.
+        /// </summary>
+        public static string Last_Modified_Date {
+            get {
+                return ResourceManager.GetString("Last Modified Date", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string Name {
+            get {
+                return ResourceManager.GetString("Name", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string OK {
@@ -191,6 +236,42 @@ namespace FileExplorer {
         public static string Select_directory_to_open {
             get {
                 return ResourceManager.GetString("Select directory to open", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string Size {
+            get {
+                return ResourceManager.GetString("Size", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort.
+        /// </summary>
+        public static string Sort {
+            get {
+                return ResourceManager.GetString("Sort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort by.
+        /// </summary>
+        public static string Sort_by {
+            get {
+                return ResourceManager.GetString("Sort by", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sort order.
+        /// </summary>
+        public static string Sort_order {
+            get {
+                return ResourceManager.GetString("Sort order", resourceCulture);
             }
         }
         

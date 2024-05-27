@@ -1,14 +1,13 @@
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer
+namespace FileExplorer.ViewModels
 {
     public class FileInfoViewModel : FileSystemInfoViewModel
     {
         private long _size;
         private string _extension;
-
-
+        
         public long Size
         {
             get => _size;
@@ -36,24 +35,6 @@ namespace FileExplorer
             }
         }
         
-        public FileInfoViewModel(ObservableRecipient owner): base(owner)
-        {
-            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
-        }
-
-        public RelayCommand OpenFileCommand { get; set; }
-
-        private void OpenFileExecute(object parameter)
-        {
-            OwnerExplorer.OpenFileCommand.Execute(parameter);
-        }
-
-        private bool OpenFileCanExecute(object parameter)
-        {
-            // return true;
-            return OwnerExplorer.OpenFileCommand.CanExecute(parameter);
-        }
-        
         public new FileInfo Model
         {
             get => (FileInfo)base.Model;
@@ -67,6 +48,23 @@ namespace FileExplorer
                     OnPropertyChanged();
                 }
             }
+        }
+        
+        public RelayCommand OpenFileCommand { get; set; }
+
+        public FileInfoViewModel(ObservableRecipient owner): base(owner)
+        {
+            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
+        }
+
+        private void OpenFileExecute(object parameter)
+        {
+            OwnerExplorer.OpenFileCommand.Execute(parameter);
+        }
+
+        private bool OpenFileCanExecute(object parameter)
+        {
+            return OwnerExplorer.OpenFileCommand.CanExecute(parameter);
         }
     }
 }
