@@ -1,9 +1,13 @@
 using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
+using FileExplorer.Helpers;
 
 namespace FileExplorer.ViewModels
 {
@@ -12,8 +16,10 @@ namespace FileExplorer.ViewModels
         private FileSystemWatcher _watcher;
         private int _count;
 
-        public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
-            = new ObservableCollection<FileSystemInfoViewModel>();
+        public DispatchedObservableCollection<FileSystemInfoViewModel> Items { get; set; }
+            = new DispatchedObservableCollection<FileSystemInfoViewModel>();
+        // public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
+        //     = new ObservableCollection<FileSystemInfoViewModel>();
 
         public int Count
         {
@@ -46,6 +52,7 @@ namespace FileExplorer.ViewModels
         
         public DirectoryInfoViewModel(ObservableRecipient owner) : base(owner)
         {
+            Items.CollectionChanged += Items_CollectionChanged;
         }
 
         public bool Open(string path)
@@ -60,6 +67,8 @@ namespace FileExplorer.ViewModels
                     itemViewModel.Open(dirName);
                     itemViewModel.Model = dirInfo;
                     Items.Add(itemViewModel);
+                    StatusMessage = Strings.LoadingSubDirectory + ", " + dirName;
+
                 }
 
                 foreach (var fileName in Directory.GetFiles(path))
@@ -152,6 +161,31 @@ namespace FileExplorer.ViewModels
         private void HandleFileSystemDelete(string fullPath)
         {
             Items.Remove(Items.FirstOrDefault(item => item.Model.FullName == fullPath));
+        }
+        
+        private void Items_CollectionChanged(object sender, NotifyCollectionChangedEventArgs args)
+        {
+            switch (args.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
+                    {
+                        item.PropertyChanged += Root_PropertyChanged;
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
+                    {
+                        item.PropertyChanged -= Root_PropertyChanged;
+                    }
+                    break;
+            }
+        }
+
+        private void Root_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "StatusMessage" && sender is FileSystemInfoViewModel viewModel)
+                this.StatusMessage = viewModel.StatusMessage;
         }
     }
 }

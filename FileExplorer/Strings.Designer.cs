@@ -195,6 +195,24 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading File.
+        /// </summary>
+        public static string LoadingFile {
+            get {
+                return ResourceManager.GetString("LoadingFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Subdirectory.
+        /// </summary>
+        public static string LoadingSubDirectory {
+            get {
+                return ResourceManager.GetString("LoadingSubDirectory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
@@ -227,6 +245,15 @@ namespace FileExplorer {
         public static string ReadOnly {
             get {
                 return ResourceManager.GetString("ReadOnly", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ready.
+        /// </summary>
+        public static string Ready {
+            get {
+                return ResourceManager.GetString("Ready", resourceCulture);
             }
         }
         

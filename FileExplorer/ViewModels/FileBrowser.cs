@@ -1,9 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Converters.Comparers;
@@ -16,6 +19,8 @@ namespace FileExplorer.ViewModels
     {
         private static readonly string[] TextFilesExtensions = { ".txt", ".ini", ".log" };
         public event EventHandler<FileInfoViewModel> OnOpenFileRequest;
+        private String _statusMessage;
+        private DirectoryInfoViewModel _root;
 
         public RelayCommand OpenRootFolderCommand { get; private set; }
 
@@ -23,7 +28,30 @@ namespace FileExplorer.ViewModels
 
         public RelayCommand OpenFileCommand { get; private set; }
 
-        public DirectoryInfoViewModel Root { get; set; }
+        // public DirectoryInfoViewModel Root { get; set; }
+        public DirectoryInfoViewModel Root
+        {
+            get { return _root; }
+            set
+            {
+                if (_root != value)
+                {
+                    if (_root != null)
+                    {
+                        _root.PropertyChanged -= Root_PropertyChanged;
+                    }
+        
+                    _root = value;
+        
+                    if (_root != null)
+                    {
+                        _root.PropertyChanged += Root_PropertyChanged;
+                    }
+        
+                    OnPropertyChanged(nameof(Root));
+                }
+            }
+        }
 
         public string Lang
         {
@@ -38,16 +66,31 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        public String StatusMessage
+        {
+            get { return _statusMessage; }
+            set
+            {
+                if (_statusMessage != value)
+                {
+                    _statusMessage = value;
+                    OnPropertyChanged(nameof(StatusMessage));
+                }
+            }
+        }
+
         public FileBrowser()
         {
             OnPropertyChanged(nameof(Lang));
-            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
+            // OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
+            OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecuteAsync);
             SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, CanSortRootFolderExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
         }
 
         public void OpenRoot(string path)
         {
+            Debug.WriteLine("OpenRoot");
             Root = new DirectoryInfoViewModel(this);
             Root.Open(path);
             OnPropertyChanged(nameof(Root));
@@ -77,6 +120,26 @@ namespace FileExplorer.ViewModels
                 var path = dlg.SelectedPath;
                 OpenRoot(path);
             }
+        }
+
+        private async void OpenRootFolderExecuteAsync(object parameter)
+        {
+            var dlg = new FolderBrowserDialog() { Description = Strings.Select_directory_to_open };
+            if (dlg.ShowDialog() == DialogResult.OK)
+            {
+                await Task.Factory.StartNew(() =>
+                {
+                    var path = dlg.SelectedPath;
+                    OpenRoot(path);
+                    this.StatusMessage = Strings.Ready;
+                });
+            }
+        }
+
+        private void Root_PropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            if (args.PropertyName == "StatusMessage" && sender is FileSystemInfoViewModel viewModel)
+                this.StatusMessage = viewModel.StatusMessage;
         }
 
         private bool CanSortRootFolderExecute(object parameter)

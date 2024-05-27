@@ -93,4 +93,13 @@
     <data name="Descending" xml:space="preserve">
         <value>Descending</value>
     </data>
+    <data name="LoadingFile" xml:space="preserve">
+        <value>Loading File</value>
+    </data>
+    <data name="LoadingSubDirectory" xml:space="preserve">
+        <value>Loading Subdirectory</value>
+    </data>
+    <data name="Ready" xml:space="preserve">
+        <value>Ready</value>
+    </data>
 </root>

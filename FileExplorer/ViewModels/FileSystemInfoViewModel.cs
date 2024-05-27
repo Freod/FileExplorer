@@ -17,6 +17,7 @@ namespace FileExplorer.ViewModels
         private FileSystemInfo _fileSystemInfo;
         private String _caption;
         private ImageSource _icon;
+        private String _statusMessage;
 
         public DateTime CreationTime
         {
@@ -137,6 +138,19 @@ namespace FileExplorer.ViewModels
         
         private ObservableRecipient Owner { get; set; }
 
+        public String StatusMessage
+        {
+            get { return _statusMessage; }
+            set
+            {
+                if (_statusMessage != value)
+                {
+                    _statusMessage = value;
+                    OnPropertyChanged(nameof(StatusMessage));
+                }
+            }
+        }
+        
         protected FileSystemInfoViewModel(ObservableRecipient owner)
         {
             Owner = owner;
@@ -144,21 +158,22 @@ namespace FileExplorer.ViewModels
 
         private ImageSource GetIconForFileType(FileSystemInfo file)
         {
-            if (file is FileInfo fileInfo)
-            {
-                string extension = fileInfo.Extension.ToLower();
-                switch (extension)
-                {
-                    case ".txt":
-                        return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/txt.png"));
-                    case ".png":
-                        return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/imagefile.png"));
-                    default:
-                        return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
-                }
-            }
-
-            return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
+            // if (file is FileInfo fileInfo)
+            // {
+            //     string extension = fileInfo.Extension.ToLower();
+            //     switch (extension)
+            //     {
+            //         case ".txt":
+            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/txt.png"));
+            //         case ".png":
+            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/imagefile.png"));
+            //         default:
+            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
+            //     }
+            // }
+            //
+            // return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
+            return null;
         }
 
 

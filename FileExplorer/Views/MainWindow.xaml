@@ -93,6 +93,9 @@
             <StatusBarItem>
                 <TextBlock x:Name="AttributesTextBlock" Text="" />
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="LoadingStatusTextBlock" Text="{Binding StatusMessage}" />
+            </StatusBarItem>
         </StatusBar>
 
         <TextBox AcceptsReturn="True" />

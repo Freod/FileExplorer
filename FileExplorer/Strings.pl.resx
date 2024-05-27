@@ -86,4 +86,13 @@
     <data name="Ascending" xml:space="preserve">
         <value>Rosnąco</value>
     </data>
+    <data name="LoadingFile" xml:space="preserve">
+        <value>Ładowanie pliku</value>
+    </data>
+    <data name="LoadingSubDirectory" xml:space="preserve">
+        <value>Ładowanie podkatalogu</value>
+    </data>
+    <data name="Ready" xml:space="preserve">
+        <value>Gotowe</value>
+    </data>
 </root>
