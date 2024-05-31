@@ -16,7 +16,6 @@ namespace FileExplorer.ViewModels
         private DateTime _lastAccessTimeUtc;
         private FileSystemInfo _fileSystemInfo;
         private String _caption;
-        private ImageSource _icon;
         private String _statusMessage;
 
         public DateTime CreationTime
@@ -89,13 +88,16 @@ namespace FileExplorer.ViewModels
             }
         }
 
-        public ImageSource Icon
+        public String StatusMessage
         {
-            get => _icon;
+            get { return _statusMessage; }
             set
             {
-                SetProperty(ref _icon, value);
-                OnPropertyChanged();
+                if (_statusMessage != value)
+                {
+                    _statusMessage = value;
+                    OnPropertyChanged(nameof(StatusMessage));
+                }
             }
         }
         
@@ -114,9 +116,29 @@ namespace FileExplorer.ViewModels
                     LastAccessTime = value.LastAccessTime;
                     LastAccessTimeUtc = value.LastAccessTimeUtc;
                     Caption = value.Name;
-                    Icon = GetIconForFileType(value);
                     OnPropertyChanged();
                 }
+            }
+        }
+        
+        public string IconResourceName
+        {
+            get
+            {
+                if (Model != null)
+                {
+                    string extension = Model.Extension.ToLower();
+                    switch (extension)
+                    {
+                        case ".txt":
+                            return "txtIcon";
+                        case ".png":
+                            return "imageIcon";
+                        default:
+                            return "defaultIcon";
+                    }
+                }
+                return "defaultIcon";
             }
         }
         
@@ -138,45 +160,9 @@ namespace FileExplorer.ViewModels
         
         private ObservableRecipient Owner { get; set; }
 
-        public String StatusMessage
-        {
-            get { return _statusMessage; }
-            set
-            {
-                if (_statusMessage != value)
-                {
-                    _statusMessage = value;
-                    OnPropertyChanged(nameof(StatusMessage));
-                }
-            }
-        }
-        
         protected FileSystemInfoViewModel(ObservableRecipient owner)
         {
             Owner = owner;
         }
-
-        private ImageSource GetIconForFileType(FileSystemInfo file)
-        {
-            // if (file is FileInfo fileInfo)
-            // {
-            //     string extension = fileInfo.Extension.ToLower();
-            //     switch (extension)
-            //     {
-            //         case ".txt":
-            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/txt.png"));
-            //         case ".png":
-            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/imagefile.png"));
-            //         default:
-            //             return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
-            //     }
-            // }
-            //
-            // return new BitmapImage(new Uri("pack://application:,,,/Resources/Images/file.png"));
-            return null;
-        }
-
-
-        
     }
 }

@@ -20,9 +20,13 @@
                       Click="CreateMenuItem_Click" />
             <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
         </ContextMenu>
+        <Image x:Key="txtIcon" Source="/Resources/Images/txt.png" />
+        <Image x:Key="imageIcon" Source="/Resources/Images/imagefile.png" />
+        <Image x:Key="defaultIcon" Source="/Resources/Images/file.png" />
+        <converters:ResourceKeyToImageSourceConverter x:Key="ResourceKeyToImageSourceConverter" />
         <DataTemplate DataType="{x:Type viewModels:FileInfoViewModel}">
             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
-                <Image Width="16" Height="16" Source="{Binding Icon}" />
+                <Image Width="16" Height="16" Source="{Binding IconResourceName, Converter={StaticResource ResourceKeyToImageSourceConverter}}" />
                 <TextBlock Text="{Binding Caption}" Margin="10,0,0,0">
                     <TextBlock.InputBindings>
                         <MouseBinding MouseAction="LeftDoubleClick"
@@ -50,6 +54,7 @@
             </Style.Triggers>
         </Style>
         <converters:LangBoolConverter x:Key="LangBoolConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
         <ContextMenu x:Key="TreeViewContextMenu">
             <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
@@ -92,6 +97,11 @@
         <StatusBar DockPanel.Dock="Bottom">
             <StatusBarItem>
                 <TextBlock x:Name="AttributesTextBlock" Text="" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button Content="Cancel" Command="{Binding CancelCommand}"
+                        Visibility="{Binding IsSorting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <!-- Visibility="{Binding IsCancelVisible, Converter={StaticResource BooleanToVisibilityConverter}}" /> -->
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock x:Name="LoadingStatusTextBlock" Text="{Binding StatusMessage}" />

@@ -102,4 +102,16 @@
     <data name="Ready" xml:space="preserve">
         <value>Ready</value>
     </data>
+    <data name="Sorting on thread" xml:space="preserve">
+        <value>Sorting on thread</value>
+    </data>
+    <data name="New max thread ID" xml:space="preserve">
+        <value>New max thread ID</value>
+    </data>
+    <data name="Sorting complete" xml:space="preserve">
+        <value>Sorting complete</value>
+    </data>
+    <data name="Sorting canceled" xml:space="preserve">
+        <value>Sorting canceled</value>
+    </data>
 </root>

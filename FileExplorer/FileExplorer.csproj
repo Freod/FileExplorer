@@ -87,6 +87,7 @@
         <Compile Include="Converters\Comparers\FileInfoViewModelComparer.cs" />
         <Compile Include="Converters\DirectionToBoolConverter.cs" />
         <Compile Include="Converters\LangBoolConverter.cs" />
+        <Compile Include="Converters\ResourceKeyToImageSourceConverter.cs" />
         <Compile Include="Converters\SortByToBoolConverter.cs" />
         <Compile Include="Helpers\DispatchedObservableCollection.cs" />
         <Compile Include="Models\Direction.cs" />

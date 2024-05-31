@@ -28,7 +28,7 @@ namespace FileExplorer {
         private static global::System.Globalization.CultureInfo resourceCulture;
         
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        public Strings() {
+        internal Strings() {
         }
         
         /// <summary>
@@ -222,6 +222,15 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New max thread ID.
+        /// </summary>
+        public static string New_max_thread_ID {
+            get {
+                return ResourceManager.GetString("New max thread ID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string OK {
@@ -299,6 +308,33 @@ namespace FileExplorer {
         public static string Sort_order {
             get {
                 return ResourceManager.GetString("Sort order", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting canceled.
+        /// </summary>
+        public static string Sorting_canceled {
+            get {
+                return ResourceManager.GetString("Sorting canceled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting complete.
+        /// </summary>
+        public static string Sorting_complete {
+            get {
+                return ResourceManager.GetString("Sorting complete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Sorting on thread.
+        /// </summary>
+        public static string Sorting_on_thread {
+            get {
+                return ResourceManager.GetString("Sorting on thread", resourceCulture);
             }
         }
         

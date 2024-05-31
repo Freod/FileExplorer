@@ -18,8 +18,6 @@ namespace FileExplorer.ViewModels
 
         public DispatchedObservableCollection<FileSystemInfoViewModel> Items { get; set; }
             = new DispatchedObservableCollection<FileSystemInfoViewModel>();
-        // public ObservableCollection<FileSystemInfoViewModel> Items { get; set; }
-        //     = new ObservableCollection<FileSystemInfoViewModel>();
 
         public int Count
         {
@@ -44,7 +42,7 @@ namespace FileExplorer.ViewModels
                 if (base.Model != value)
                 {
                     base.Model = value;
-                    Count = value.GetFileSystemInfos().Length; // example of additional property logic
+                    Count = value.GetFileSystemInfos().Length;
                     OnPropertyChanged();
                 }
             }

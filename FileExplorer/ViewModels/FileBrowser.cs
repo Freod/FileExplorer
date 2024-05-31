@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -21,6 +22,9 @@ namespace FileExplorer.ViewModels
         public event EventHandler<FileInfoViewModel> OnOpenFileRequest;
         private String _statusMessage;
         private DirectoryInfoViewModel _root;
+        private int _maxThreadId = 0;
+        private CancellationTokenSource _cancellationTokenSource;
+        private bool _isSorting;
 
         public RelayCommand OpenRootFolderCommand { get; private set; }
 
@@ -28,7 +32,8 @@ namespace FileExplorer.ViewModels
 
         public RelayCommand OpenFileCommand { get; private set; }
 
-        // public DirectoryInfoViewModel Root { get; set; }
+        public RelayCommand CancelCommand { get; }
+
         public DirectoryInfoViewModel Root
         {
             get { return _root; }
@@ -40,14 +45,14 @@ namespace FileExplorer.ViewModels
                     {
                         _root.PropertyChanged -= Root_PropertyChanged;
                     }
-        
+
                     _root = value;
-        
+
                     if (_root != null)
                     {
                         _root.PropertyChanged += Root_PropertyChanged;
                     }
-        
+
                     OnPropertyChanged(nameof(Root));
                 }
             }
@@ -79,13 +84,26 @@ namespace FileExplorer.ViewModels
             }
         }
 
+        public bool IsSorting
+        {
+            get { return _isSorting; }
+            set
+            {
+                if (_isSorting != value)
+                {
+                    _isSorting = value;
+                    OnPropertyChanged(nameof(IsSorting));
+                }
+            }
+        }
+
         public FileBrowser()
         {
             OnPropertyChanged(nameof(Lang));
-            // OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecute);
             OpenRootFolderCommand = new RelayCommand(OpenRootFolderExecuteAsync);
-            SortRootFolderCommand = new RelayCommand(SortRootFolderExecute, CanSortRootFolderExecute);
+            SortRootFolderCommand = new RelayCommand(SortRootFolderExecuteAsync, CanSortRootFolderExecute);
             OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
+            CancelCommand = new RelayCommand(CancelSorting, (parameter) => IsSorting);
         }
 
         public void OpenRoot(string path)
@@ -94,11 +112,6 @@ namespace FileExplorer.ViewModels
             Root = new DirectoryInfoViewModel(this);
             Root.Open(path);
             OnPropertyChanged(nameof(Root));
-        }
-
-        public void Sort(SortingOptions sortingOptions)
-        {
-            SortItems(Root.Items, sortingOptions);
         }
 
         public object GetFileContent(FileInfoViewModel viewModel)
@@ -110,16 +123,6 @@ namespace FileExplorer.ViewModels
             }
 
             return null;
-        }
-
-        private void OpenRootFolderExecute(object parameter)
-        {
-            var dlg = new FolderBrowserDialog() { Description = Strings.Select_directory_to_open };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            {
-                var path = dlg.SelectedPath;
-                OpenRoot(path);
-            }
         }
 
         private async void OpenRootFolderExecuteAsync(object parameter)
@@ -147,7 +150,7 @@ namespace FileExplorer.ViewModels
             return Root != null;
         }
 
-        private void SortRootFolderExecute(object parameter)
+        private void SortRootFolderExecuteAsync(object parameter)
         {
             if (Root != null)
             {
@@ -157,14 +160,43 @@ namespace FileExplorer.ViewModels
                 if (result == true)
                 {
                     var options = sortDialog.Options;
-                    Sort(options);
+                    _cancellationTokenSource = new CancellationTokenSource();
+                    IsSorting = true;
+                    
+                    var synchronizationContext = SynchronizationContext.Current;
+
+                    Task.Factory.StartNew(() =>
+                    {
+                        SortItems(Root.Items, options)
+                            .ContinueWith(task =>
+                            {
+                                synchronizationContext.Post(_ =>
+                                {
+                                    if (task.IsCanceled)
+                                    {
+                                        StatusMessage = Strings.Sorting_canceled;
+                                    }
+                                    else
+                                    {
+                                        StatusMessage = Strings.Sorting_complete;
+                                    }
+
+                                    IsSorting = false;
+                                }, null);
+                            });
+                    }, _cancellationTokenSource.Token);
                 }
             }
 
             OnPropertyChanged(nameof(Root));
         }
 
-        private void SortItems(ObservableCollection<FileSystemInfoViewModel> items, SortingOptions sortingOptions)
+        private void CancelSorting(object parametr)
+        {
+            _cancellationTokenSource?.Cancel();
+        }
+
+        private async Task SortItems(ObservableCollection<FileSystemInfoViewModel> items, SortingOptions sortingOptions)
         {
             var directories = items.OfType<DirectoryInfoViewModel>().ToList();
             var files = items.OfType<FileInfoViewModel>().ToList();
@@ -174,13 +206,33 @@ namespace FileExplorer.ViewModels
 
             var sortedItems = new List<FileSystemInfoViewModel>();
 
-            foreach (var directory in directories)
+            Task[] taskArray = new Task[directories.Count];
+            for (int i = 0; i < directories.Count; i++)
             {
+                var directory = directories[i];
+
+                int currentThreadId = Thread.CurrentThread.ManagedThreadId;
+                StatusMessage = $"{Strings.Sorting_on_thread} {currentThreadId}, {directory.Model.FullName}";
+                Debug.WriteLine($"Sorting on thread {currentThreadId}: {directory.Model.FullName}");
                 sortedItems.Add(directory);
-                if (directory.Items.Any())
+
+                taskArray[i] = Task.Factory.StartNew(async () =>
                 {
-                    SortItems(directory.Items, sortingOptions);
-                }
+                    int innerThreadId = Thread.CurrentThread.ManagedThreadId;
+                    Debug.WriteLine($"Sorting on thread {innerThreadId}: {directory.Model.FullName}");
+                    if (innerThreadId > _maxThreadId)
+                    {
+                        _maxThreadId = innerThreadId;
+                        StatusMessage = $"{Strings.New_max_thread_ID}: {_maxThreadId}";
+                    }
+
+                    if (directory.Items.Any())
+                    {
+                        await SortItems(directory.Items, sortingOptions);
+                    }
+                    // }, TaskCreationOptions.LongRunning).Unwrap();
+                    // }, TaskCreationOptions.PreferFairness).Unwrap();
+                }, _cancellationTokenSource.Token).Unwrap();
             }
 
             sortedItems.AddRange(files);
@@ -200,6 +252,8 @@ namespace FileExplorer.ViewModels
                     }
                 }
             }
+
+            await Task.WhenAll(taskArray);
         }
 
         private bool OpenFileCanExecute(object parameter)

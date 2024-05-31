@@ -95,4 +95,16 @@
     <data name="Ready" xml:space="preserve">
         <value>Gotowe</value>
     </data>
+    <data name="Sorting on thread" xml:space="preserve">
+        <value>Sortowanie na wątku</value>
+    </data>
+    <data name="New max thread ID" xml:space="preserve">
+        <value>Nowe maksymalne ID wątku</value>
+    </data>
+    <data name="Sorting complete" xml:space="preserve">
+        <value>Sortowanie zakończone</value>
+    </data>
+    <data name="Sorting canceled" xml:space="preserve">
+        <value>Sortowanie anulowane</value>
+    </data>
 </root>
