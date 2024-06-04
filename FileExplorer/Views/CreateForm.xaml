@@ -17,13 +17,17 @@
         <TextBox Grid.Row="0" Name="Name" />
 
         <StackPanel Grid.Row="1" Orientation="Horizontal">
-            <RadioButton GroupName="FileOrFolder" Content="{Binding Source={StaticResource Strings}, Path=File}" IsChecked="True" Margin="4" />
-            <RadioButton GroupName="FileOrFolder" Content="{Binding Source={StaticResource Strings}, Path=Folder}" Name="CheckIsFolder" Margin="4" />
+            <RadioButton GroupName="FileOrFolder" Content="{Binding Source={StaticResource Strings}, Path=File}"
+                         IsChecked="True" Margin="4" />
+            <RadioButton GroupName="FileOrFolder" Content="{Binding Source={StaticResource Strings}, Path=Folder}"
+                         Name="CheckIsFolder" Margin="4" />
         </StackPanel>
 
         <StackPanel Grid.Row="2" Orientation="Vertical">
-            <CheckBox Content="{Binding Source={StaticResource Strings}, Path=ReadOnly}" Name="ReadOnlyCheckBox" Margin="4" />
-            <CheckBox Content="{Binding Source={StaticResource Strings}, Path=Archive}" Name="ArchiveCheckBox" Margin="4" />
+            <CheckBox Content="{Binding Source={StaticResource Strings}, Path=ReadOnly}" Name="ReadOnlyCheckBox"
+                      Margin="4" />
+            <CheckBox Content="{Binding Source={StaticResource Strings}, Path=Archive}" Name="ArchiveCheckBox"
+                      Margin="4" />
             <CheckBox Content="{Binding Source={StaticResource Strings}, Path=Hidden}" Name="HiddenCheckBox" Margin="4" />
             <CheckBox Content="{Binding Source={StaticResource Strings}, Path=System}" Name="SystemCheckBox" Margin="4" />
         </StackPanel>

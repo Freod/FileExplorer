@@ -1,47 +1,43 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 using FileExplorer.Models;
 
-namespace FileExplorer.Converters
+namespace FileExplorer.Converters;
+
+public class SortByToBoolConverter : IValueConverter
 {
-    public class SortByToBoolConverter : IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || parameter == null || !(value is SortBy))
-                return false;
+        if (value == null || parameter == null || !(value is SortBy))
+            return false;
 
-            SortBy sortBy = (SortBy)value;
-            char targetChar = parameter.ToString()[0];
+        var sortBy = (SortBy)value;
+        var targetChar = parameter.ToString()[0];
 
-            return sortBy.ToString()[0] == targetChar;
-        }
+        return sortBy.ToString()[0] == targetChar;
+    }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || parameter == null || !(value is bool))
-                return null;
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value == null || parameter == null || !(value is bool))
+            return null;
 
-            bool isChecked = (bool)value;
-            char targetChar = parameter.ToString()[0];
+        var isChecked = (bool)value;
+        var targetChar = parameter.ToString()[0];
 
-            if (isChecked)
+        if (isChecked)
+            switch (targetChar)
             {
-                switch (targetChar)
-                {
-                    case 'N':
-                        return SortBy.Name;
-                    case 'E':
-                        return SortBy.Extension;
-                    case 'S':
-                        return SortBy.Size;
-                    case 'D':
-                        return SortBy.Date;
-                }
+                case 'N':
+                    return SortBy.Name;
+                case 'E':
+                    return SortBy.Extension;
+                case 'S':
+                    return SortBy.Size;
+                case 'D':
+                    return SortBy.Date;
             }
 
-            return null;
-        }
+        return null;
     }
 }

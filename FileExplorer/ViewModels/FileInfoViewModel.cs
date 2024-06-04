@@ -1,70 +1,69 @@
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer.ViewModels
+namespace FileExplorer.ViewModels;
+
+public class FileInfoViewModel : FileSystemInfoViewModel
 {
-    public class FileInfoViewModel : FileSystemInfoViewModel
+    private string _extension;
+    private long _size;
+
+    public FileInfoViewModel(ObservableRecipient owner) : base(owner)
     {
-        private long _size;
-        private string _extension;
-        
-        public long Size
+        OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
+    }
+
+    public long Size
+    {
+        get => _size;
+        set
         {
-            get => _size;
-            set
+            if (_size != value)
             {
-                if (_size != value)
-                {
-                    _size = value;
-                    OnPropertyChanged();
-                }
+                _size = value;
+                OnPropertyChanged();
             }
         }
-        
+    }
 
-        public string Extension
+
+    public string Extension
+    {
+        get => _extension;
+        set
         {
-            get => _extension;
-            set
+            if (_extension != value)
             {
-                if (_extension != value)
-                {
-                    _extension = value;
-                    OnPropertyChanged();
-                }
+                _extension = value;
+                OnPropertyChanged();
             }
         }
-        
-        public new FileInfo Model
+    }
+
+    public new FileInfo Model
+    {
+        get => (FileInfo)base.Model;
+        set
         {
-            get => (FileInfo)base.Model;
-            set
+            if (base.Model != value)
             {
-                if (base.Model != value)
-                {
-                    base.Model = value;
-                    Size = value.Length;
-                    Extension = value.Extension;
-                    OnPropertyChanged();
-                }
+                base.Model = value;
+                Size = value.Length;
+                Extension = value.Extension;
+                OnPropertyChanged();
             }
         }
-        
-        public RelayCommand OpenFileCommand { get; set; }
+    }
 
-        public FileInfoViewModel(ObservableRecipient owner): base(owner)
-        {
-            OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
-        }
+    public RelayCommand OpenFileCommand { get; set; }
 
-        private void OpenFileExecute(object parameter)
-        {
-            OwnerExplorer.OpenFileCommand.Execute(parameter);
-        }
+    private void OpenFileExecute(object parameter)
+    {
+        OwnerExplorer.OpenFileCommand.Execute(parameter);
+    }
 
-        private bool OpenFileCanExecute(object parameter)
-        {
-            return OwnerExplorer.OpenFileCommand.CanExecute(parameter);
-        }
+    private bool OpenFileCanExecute(object parameter)
+    {
+        return OwnerExplorer.OpenFileCommand.CanExecute(parameter);
     }
 }

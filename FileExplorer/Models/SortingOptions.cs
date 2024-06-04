@@ -1,30 +1,29 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace FileExplorer.Models
-{
-    public class SortingOptions: ObservableRecipient
-    {
-        private SortBy _sortBy;
-        private Direction _direction;
+namespace FileExplorer.Models;
 
-        public SortBy SortBy
+public class SortingOptions : ObservableRecipient
+{
+    private Direction _direction;
+    private SortBy _sortBy;
+
+    public SortBy SortBy
+    {
+        get => _sortBy;
+        set
         {
-            get => _sortBy;
-            set
-            {
-                SetProperty(ref _sortBy, value);
-                OnPropertyChanged();
-            }
+            SetProperty(ref _sortBy, value);
+            OnPropertyChanged();
         }
-        
-        public Direction Direction
+    }
+
+    public Direction Direction
+    {
+        get => _direction;
+        set
         {
-            get => _direction;
-            set
-            {
-                SetProperty(ref _direction, value);
-                OnPropertyChanged();
-            }
+            SetProperty(ref _direction, value);
+            OnPropertyChanged();
         }
     }
 }

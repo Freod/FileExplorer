@@ -1,40 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using FileExplorer.Models;
+﻿using FileExplorer.Models;
 using FileExplorer.ViewModels;
 
-namespace FileExplorer.Converters.Comparers
+namespace FileExplorer.Converters.Comparers;
+
+public class DirectoryInfoViewModelComparer : IComparer<DirectoryInfoViewModel>
 {
-    public class DirectoryInfoViewModelComparer: IComparer<DirectoryInfoViewModel>
+    private readonly Direction _direction;
+    private readonly SortBy _sortBy;
+
+    public DirectoryInfoViewModelComparer(SortBy sortBy, Direction direction)
     {
-        private readonly SortBy _sortBy;
-        private readonly Direction _direction;
+        _sortBy = sortBy;
+        _direction = direction;
+    }
 
-        public DirectoryInfoViewModelComparer(SortBy sortBy, Direction direction)
+    public int Compare(DirectoryInfoViewModel x, DirectoryInfoViewModel y)
+    {
+        int result;
+        switch (_sortBy)
         {
-            _sortBy = sortBy;
-            _direction = direction;
+            case SortBy.Name:
+                result = string.Compare(x.Caption, y.Caption);
+                break;
+            case SortBy.Date:
+                result = DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
+                break;
+            case SortBy.Size:
+                result = x.Count.CompareTo(y.Count);
+                break;
+            default:
+                result = 0;
+                break;
         }
 
-        public int Compare(DirectoryInfoViewModel x, DirectoryInfoViewModel y)
-        {
-            int result;
-            switch (_sortBy)
-            {
-                case SortBy.Name:
-                    result = string.Compare(x.Caption, y.Caption);
-                    break;
-                case SortBy.Date:
-                    result = DateTime.Compare(x.LastWriteTime, y.LastWriteTime);
-                    break;
-                case SortBy.Size:
-                    result = x.Count.CompareTo(y.Count);
-                    break;
-                default:
-                    result = 0;
-                    break;
-            }
-            return _direction == Direction.Ascending ? result : -result;
-        }
+        return _direction == Direction.Ascending ? result : -result;
     }
 }

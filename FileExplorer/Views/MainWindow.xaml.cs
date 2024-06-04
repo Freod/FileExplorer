@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Windows;
@@ -6,165 +6,158 @@ using System.Windows.Controls;
 using FileExplorer.Resources;
 using FileExplorer.ViewModels;
 using Application = System.Windows.Application;
-using Exception = System.Exception;
 using MessageBox = System.Windows.MessageBox;
-using Path = System.IO.Path;
 
-namespace FileExplorer.Views
+namespace FileExplorer.Views;
+
+public partial class MainWindow : Window
 {
-    public partial class MainWindow : Window
+    private readonly FileBrowser _fileBrowser;
+
+    public MainWindow()
     {
-        private readonly FileBrowser _fileBrowser;
+        InitializeComponent();
+        _fileBrowser = new FileBrowser();
+        _fileBrowser.PropertyChanged += FileBrowser_PropertyChanged;
+        _fileBrowser.OnOpenFileRequest += FileBrowser_OnOpenFileRequest;
+        TreeView.SelectedItemChanged += TreeView_SelectedItemChanged;
+        DataContext = _fileBrowser;
+    }
 
-        public MainWindow()
+    private void MenuExit_Click(object sender, RoutedEventArgs e)
+    {
+        Application.Current.Shutdown();
+    }
+
+    private void FileBrowser_PropertyChanged(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(FileBrowser.Lang))
+            CultureResources.ChangeCulture(new CultureInfo(_fileBrowser.Lang));
+    }
+
+    private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+        if (TreeView.SelectedItem is FileSystemInfoViewModel item)
         {
-            InitializeComponent();
-            _fileBrowser = new FileBrowser();
-            _fileBrowser.PropertyChanged += FileBrowser_PropertyChanged;
-            _fileBrowser.OnOpenFileRequest += FileBrowser_OnOpenFileRequest;
-            TreeView.SelectedItemChanged += TreeView_SelectedItemChanged;
-            DataContext = _fileBrowser;
+            AttributesTextBlock.Text = GetFileAttributes(item.Model.Attributes);
+            TextPreviewScrollViewer.Content = "";
         }
+    }
 
-        private void MenuExit_Click(object sender, RoutedEventArgs e)
+    private string GetFileAttributes(FileAttributes attributes)
+    {
+        try
         {
-            Application.Current.Shutdown();
+            var attributeString = ConvertAttributesToString(attributes);
+            return $"{Strings.Attributes}: {attributeString}";
         }
-
-        private void FileBrowser_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        catch (Exception ex)
         {
-            if (e.PropertyName == nameof(FileBrowser.Lang))
-            {
-                CultureResources.ChangeCulture(new CultureInfo(_fileBrowser.Lang));
-            }
+            return $"{Strings.Error}: {ex.Message}";
         }
+    }
 
-        private void TreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            if (TreeView.SelectedItem is FileSystemInfoViewModel item)
-            {
-                AttributesTextBlock.Text = GetFileAttributes(item.Model.Attributes);
-                TextPreviewScrollViewer.Content = "";
-            }
-        }
+    private void CreateMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        var createForm = new CreateForm();
+        var result = createForm.ShowDialog();
 
-        private string GetFileAttributes(FileAttributes attributes)
-        {
+        if (result == true && TreeView.SelectedItem is FileSystemInfoViewModel item)
             try
             {
-                var attributeString = ConvertAttributesToString(attributes);
-                return $"{Strings.Attributes}: {attributeString}";
+                var name = createForm.FileOrFolderName;
+                var isFolder = createForm.IsFolder;
+                var isReadOnly = createForm.IsReadOnly;
+                var isArchive = createForm.IsArchive;
+                var isHidden = createForm.IsHidden;
+                var isSystem = createForm.IsSystem;
+
+                var attributes = default(FileAttributes);
+                if (isReadOnly) attributes |= FileAttributes.ReadOnly;
+                if (isArchive) attributes |= FileAttributes.Archive;
+                if (isHidden) attributes |= FileAttributes.Hidden;
+                if (isSystem) attributes |= FileAttributes.System;
+
+                var newItemPath = Path.Combine(item.Model.FullName, name);
+
+                if (Directory.Exists(newItemPath) || File.Exists(newItemPath))
+                    throw new InvalidOperationException("File or directory exits.");
+
+                if (isFolder)
+                {
+                    Directory.CreateDirectory(newItemPath);
+                    new DirectoryInfo(newItemPath).Attributes |= attributes;
+                }
+                else
+                {
+                    var file = File.Create(newItemPath);
+                    file.Close();
+                    File.SetAttributes(newItemPath, attributes);
+                }
             }
             catch (Exception ex)
             {
-                return $"{Strings.Error}: {ex.Message}";
+                MessageBox.Show("Error writing file: " + ex.Message);
             }
-        }
+    }
 
-        private void CreateMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var createForm = new CreateForm();
-            var result = createForm.ShowDialog();
-
-            if (result == true && TreeView.SelectedItem is FileSystemInfoViewModel item)
-                try
-                {
-                    var name = createForm.FileOrFolderName;
-                    var isFolder = createForm.IsFolder;
-                    var isReadOnly = createForm.IsReadOnly;
-                    var isArchive = createForm.IsArchive;
-                    var isHidden = createForm.IsHidden;
-                    var isSystem = createForm.IsSystem;
-
-                    var attributes = default(FileAttributes);
-                    if (isReadOnly) attributes |= FileAttributes.ReadOnly;
-                    if (isArchive) attributes |= FileAttributes.Archive;
-                    if (isHidden) attributes |= FileAttributes.Hidden;
-                    if (isSystem) attributes |= FileAttributes.System;
-
-                    var newItemPath = Path.Combine(item.Model.FullName, name);
-
-                    if (Directory.Exists(newItemPath) || File.Exists(newItemPath))
-                        throw new InvalidOperationException("File or directory exits.");
-
-                    if (isFolder)
-                    {
-                        Directory.CreateDirectory(newItemPath);
-                        new DirectoryInfo(newItemPath).Attributes |= attributes;
-                    }
-                    else
-                    {
-                        var file = File.Create(newItemPath);
-                        file.Close();
-                        File.SetAttributes(newItemPath, attributes);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error writing file: " + ex.Message);
-                }
-        }
-
-        private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            if (TreeView.SelectedItem is FileSystemInfoViewModel item)
+    private void DeleteMenuItem_Click(object sender, RoutedEventArgs e)
+    {
+        if (TreeView.SelectedItem is FileSystemInfoViewModel item)
+            try
             {
-                try
+                if (Directory.Exists(item.Model.FullName))
                 {
-                    if (Directory.Exists(item.Model.FullName))
-                    {
-                        MessageBox.Show("Folder");
-                        File.SetAttributes(item.Model.FullName, FileAttributes.Normal);
-                        Directory.Exists(item.Model.FullName);
-                        Directory.Delete(item.Model.FullName, true);
-                    }
-                    else
-                    {
-                        File.Delete(item.Model.FullName);
-                    }
+                    MessageBox.Show("Folder");
+                    File.SetAttributes(item.Model.FullName, FileAttributes.Normal);
+                    Directory.Exists(item.Model.FullName);
+                    Directory.Delete(item.Model.FullName, true);
                 }
-                catch (Exception ex)
+                else
                 {
-                    MessageBox.Show("Error reading file: " + ex.Message);
+                    File.Delete(item.Model.FullName);
                 }
             }
-        }
-
-        private void FileBrowser_OnOpenFileRequest(object sender, FileInfoViewModel viewModel)
-        {
-            var content = _fileBrowser.GetFileContent(viewModel);
-            if (content is string text)
+            catch (Exception ex)
             {
-                var textView = new TextBlock { Text = text };
-                TextPreviewScrollViewer.Content = textView;
+                MessageBox.Show("Error reading file: " + ex.Message);
             }
-        }
+    }
 
-        private string ConvertAttributesToString(FileAttributes attributes)
+    private void FileBrowser_OnOpenFileRequest(object sender, FileInfoViewModel viewModel)
+    {
+        var content = _fileBrowser.GetFileContent(viewModel);
+        if (content is string text)
         {
-            var result = "";
-
-            if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
-                result += "r";
-            else
-                result += "-";
-
-            if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
-                result += "a";
-            else
-                result += "-";
-
-            if ((attributes & FileAttributes.System) == FileAttributes.System)
-                result += "s";
-            else
-                result += "-";
-
-            if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
-                result += "h";
-            else
-                result += "-";
-
-            return result;
+            var textView = new TextBlock { Text = text };
+            TextPreviewScrollViewer.Content = textView;
         }
+    }
+
+    private string ConvertAttributesToString(FileAttributes attributes)
+    {
+        var result = "";
+
+        if ((attributes & FileAttributes.ReadOnly) == FileAttributes.ReadOnly)
+            result += "r";
+        else
+            result += "-";
+
+        if ((attributes & FileAttributes.Archive) == FileAttributes.Archive)
+            result += "a";
+        else
+            result += "-";
+
+        if ((attributes & FileAttributes.System) == FileAttributes.System)
+            result += "s";
+        else
+            result += "-";
+
+        if ((attributes & FileAttributes.Hidden) == FileAttributes.Hidden)
+            result += "h";
+        else
+            result += "-";
+
+        return result;
     }
 }

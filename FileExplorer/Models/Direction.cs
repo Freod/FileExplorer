@@ -1,8 +1,7 @@
-﻿namespace FileExplorer.Models
+﻿namespace FileExplorer.Models;
+
+public enum Direction
 {
-    public enum Direction
-    {
-        Ascending,
-        Descending
-    }
+    Ascending,
+    Descending
 }

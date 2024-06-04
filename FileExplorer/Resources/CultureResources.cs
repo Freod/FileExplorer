@@ -1,30 +1,30 @@
 ﻿using System.Globalization;
 using System.Windows.Data;
+using Application = System.Windows.Application;
 
-namespace FileExplorer.Resources
+namespace FileExplorer.Resources;
+
+public class CultureResources
 {
-    public class CultureResources
+    private static ObjectDataProvider _provider;
+
+    public static ObjectDataProvider ResourceProvider
     {
-        private static ObjectDataProvider _provider;
-
-        public static ObjectDataProvider ResourceProvider
+        get
         {
-            get
-            {
-                if (_provider == null)
-                    _provider = System.Windows.Application.Current.FindResource("Strings") as ObjectDataProvider;
-                return _provider;
-            }
+            if (_provider == null)
+                _provider = Application.Current.FindResource("Strings") as ObjectDataProvider;
+            return _provider;
         }
+    }
 
-        public Strings GetStringsInstance()
-        {
-            return new Strings();
-        }
+    public Strings GetStringsInstance()
+    {
+        return new Strings();
+    }
 
-        public static void ChangeCulture(CultureInfo culture)
-        {
-            ResourceProvider.Refresh();
-        }
+    public static void ChangeCulture(CultureInfo culture)
+    {
+        ResourceProvider.Refresh();
     }
 }

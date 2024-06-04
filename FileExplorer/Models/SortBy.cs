@@ -1,10 +1,9 @@
-﻿namespace FileExplorer.Models
+﻿namespace FileExplorer.Models;
+
+public enum SortBy
 {
-    public enum SortBy
-    {
-        Name,
-        Extension,
-        Size,
-        Date
-    }
+    Name,
+    Extension,
+    Size,
+    Date
 }

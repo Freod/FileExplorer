@@ -1,43 +1,39 @@
-﻿using System;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 using FileExplorer.Models;
 
-namespace FileExplorer.Converters
+namespace FileExplorer.Converters;
+
+public class DirectionToBoolConverter : IValueConverter
 {
-    public class DirectionToBoolConverter: IValueConverter
+    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || parameter == null || !(value is Direction))
-                return false;
+        if (value == null || parameter == null || !(value is Direction))
+            return false;
 
-            Direction sortOrder = (Direction)value;
-            char targetChar = parameter.ToString()[0];
+        var sortOrder = (Direction)value;
+        var targetChar = parameter.ToString()[0];
 
-            return sortOrder.ToString()[0] == targetChar;
-        }
+        return sortOrder.ToString()[0] == targetChar;
+    }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value == null || parameter == null || !(value is bool))
-                return null;
+    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+    {
+        if (value == null || parameter == null || !(value is bool))
+            return null;
 
-            bool isChecked = (bool)value;
-            char targetChar = parameter.ToString()[0];
+        var isChecked = (bool)value;
+        var targetChar = parameter.ToString()[0];
 
-            if (isChecked)
+        if (isChecked)
+            switch (targetChar)
             {
-                switch (targetChar)
-                {
-                    case 'A':
-                        return Direction.Ascending;
-                    case 'D':
-                        return Direction.Descending;
-                }
+                case 'A':
+                    return Direction.Ascending;
+                case 'D':
+                    return Direction.Descending;
             }
 
-            return null;
-        }
+        return null;
     }
 }

@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:FileExplorer"
         xmlns:viewModels="clr-namespace:FileExplorer.ViewModels"
         xmlns:converters="clr-namespace:FileExplorer.Converters"
         mc:Ignorable="d"
@@ -20,13 +19,11 @@
                       Click="CreateMenuItem_Click" />
             <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
         </ContextMenu>
-        <Image x:Key="txtIcon" Source="/Resources/Images/txt.png" />
-        <Image x:Key="imageIcon" Source="/Resources/Images/imagefile.png" />
-        <Image x:Key="defaultIcon" Source="/Resources/Images/file.png" />
         <converters:ResourceKeyToImageSourceConverter x:Key="ResourceKeyToImageSourceConverter" />
         <DataTemplate DataType="{x:Type viewModels:FileInfoViewModel}">
             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
-                <Image Width="16" Height="16" Source="{Binding IconResourceName, Converter={StaticResource ResourceKeyToImageSourceConverter}}" />
+                <Image Width="16" Height="16"
+                       Source="{Binding IconResourceName, Converter={StaticResource ResourceKeyToImageSourceConverter}}" />
                 <TextBlock Text="{Binding Caption}" Margin="10,0,0,0">
                     <TextBlock.InputBindings>
                         <MouseBinding MouseAction="LeftDoubleClick"
@@ -56,11 +53,6 @@
         <converters:LangBoolConverter x:Key="LangBoolConverter" />
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
 
-        <ContextMenu x:Key="TreeViewContextMenu">
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
-                      Click="CreateMenuItem_Click" />
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
-        </ContextMenu>
     </Window.Resources>
 
     <DockPanel>
