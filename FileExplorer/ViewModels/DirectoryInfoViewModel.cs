@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Helpers;
+using FileExplorer.Managers;
 using Application = System.Windows.Application;
 using MessageBox = System.Windows.MessageBox;
 
@@ -12,10 +13,14 @@ public class DirectoryInfoViewModel : FileSystemInfoViewModel
 {
     private int _count;
     private FileSystemWatcher _watcher;
+    private readonly FileManager _fileManager;
+
 
     public DirectoryInfoViewModel(ObservableRecipient owner) : base(owner)
     {
         Items.CollectionChanged += Items_CollectionChanged;
+        var context = new ApplicationDbContext();
+        _fileManager = new FileManager(context);
     }
 
     public DispatchedObservableCollection<FileSystemInfoViewModel> Items { get; set; } = new();
@@ -105,19 +110,26 @@ public class DirectoryInfoViewModel : FileSystemInfoViewModel
         {
             case WatcherChangeTypes.Created:
                 HandleFileSystemCreate(e.FullPath);
+                _fileManager.SaveEventInDatabase(e.FullPath, e.ChangeType.ToString());
+                StatusMessage = $"Created {e.FullPath}";
                 break;
             case WatcherChangeTypes.Deleted:
                 HandleFileSystemDelete(e.FullPath);
+                _fileManager.SaveEventInDatabase(e.FullPath, e.ChangeType.ToString());
+                StatusMessage = $"Removed {e.FullPath}";
                 break;
             case WatcherChangeTypes.Changed:
+                _fileManager.SaveEventInDatabase(e.FullPath, e.ChangeType.ToString());
+                StatusMessage = $"Changed {e.FullPath}";
                 break;
             case WatcherChangeTypes.Renamed:
-
                 var renamedEvent = e as RenamedEventArgs;
                 if (renamedEvent != null)
                 {
+                    _fileManager.RenameToDatabase(renamedEvent);
                     HandleFileSystemDelete(renamedEvent.OldFullPath);
                     HandleFileSystemCreate(renamedEvent.FullPath);
+                    StatusMessage = $"Renamed from {renamedEvent.OldFullPath} to {renamedEvent.FullPath}";
                 }
 
                 break;
@@ -164,10 +176,10 @@ public class DirectoryInfoViewModel : FileSystemInfoViewModel
                 foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
                     item.PropertyChanged += Root_PropertyChanged;
                 break;
-            case NotifyCollectionChangedAction.Remove:
-                foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
-                    item.PropertyChanged -= Root_PropertyChanged;
-                break;
+            // case NotifyCollectionChangedAction.Remove:
+            //     foreach (var item in args.NewItems.Cast<FileSystemInfoViewModel>())
+            //         item.PropertyChanged -= Root_PropertyChanged;
+            //     break;
         }
     }
 

@@ -119,4 +119,16 @@
     <data name="Sorting canceled" xml:space="preserve">
         <value>Sorting canceled</value>
     </data>
+    <data name="Please enter your password" xml:space="preserve">
+        <value>Please enter your password</value>
+    </data>
+    <data name="Users" xml:space="preserve">
+        <value>Users</value>
+    </data>
+    <data name="Register User" xml:space="preserve">
+        <value>Register user</value>
+    </data>
+    <data name="Manage" xml:space="preserve">
+        <value>Manage</value>
+    </data>
 </root>

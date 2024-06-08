@@ -111,4 +111,16 @@
     <data name="Sorting canceled" xml:space="preserve">
         <value>Sortowanie anulowane</value>
     </data>
+    <data name="Please enter your password" xml:space="preserve">
+        <value>Proszę wprowadz swoje hasło</value>
+    </data>
+    <data name="Users" xml:space="preserve">
+        <value>Użytkownicy</value>
+    </data>
+    <data name="Register User" xml:space="preserve">
+        <value>Rejestracja użytkownika</value>
+    </data>
+    <data name="Manage" xml:space="preserve">
+        <value>Zarządzaj</value>
+    </data>
 </root>

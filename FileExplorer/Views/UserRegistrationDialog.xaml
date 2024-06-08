@@ -1,0 +1,34 @@
+﻿<Window x:Class="FileExplorer.Views.UserRegistrationDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:FileExplorer.Views"
+        mc:Ignorable="d"
+        Title="UserRegistrationDialog" Height="280" Width="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Label Content="Username:" Margin="10,5,10,5" Grid.Row="0"/>
+        <TextBox x:Name="UsernameTextBox" Margin="10,5,10,5" Grid.Row="1" />
+        
+        <Label Content="Password:" Margin="10,5,10,5" Grid.Row="2" />
+        <PasswordBox x:Name="PasswordBox" Margin="10,5,10,5" Grid.Row="3" />
+        
+        <Label Content="IP Address:" Margin="10,5,10,5" Grid.Row="4" />
+        <TextBox x:Name="IpAddressTextBox" Margin="10,5,10,5" Grid.Row="5" />
+        
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="10,5,10,5" Grid.Row="6">
+            <Button Content="Register" Width="75" Margin="5" Click="RegisterButton_Click" />
+            <Button Content="Cancel" Width="75" Margin="5" Click="CancelButton_Click" />
+        </StackPanel>
+    </Grid>
+</Window>

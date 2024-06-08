@@ -213,6 +213,15 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage.
+        /// </summary>
+        public static string Manage {
+            get {
+                return ResourceManager.GetString("Manage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
         public static string Name {
@@ -249,6 +258,15 @@ namespace FileExplorer {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please enter your password.
+        /// </summary>
+        public static string Please_enter_your_password {
+            get {
+                return ResourceManager.GetString("Please enter your password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Read only.
         /// </summary>
         public static string ReadOnly {
@@ -263,6 +281,15 @@ namespace FileExplorer {
         public static string Ready {
             get {
                 return ResourceManager.GetString("Ready", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Register user.
+        /// </summary>
+        public static string Register_User {
+            get {
+                return ResourceManager.GetString("Register User", resourceCulture);
             }
         }
         
@@ -344,6 +371,15 @@ namespace FileExplorer {
         public static string System {
             get {
                 return ResourceManager.GetString("System", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string Users {
+            get {
+                return ResourceManager.GetString("Users", resourceCulture);
             }
         }
     }

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using FileExplorer.Converters.Comparers;
+using FileExplorer.Managers;
 using FileExplorer.Models;
 using FileExplorer.Views;
 using MessageBox = System.Windows.MessageBox;
@@ -19,6 +20,7 @@ public class FileBrowser : ObservableRecipient
     private int _maxThreadId;
     private DirectoryInfoViewModel _root;
     private string _statusMessage;
+    private FileManager _fileManager;
 
     public FileBrowser()
     {
@@ -27,6 +29,10 @@ public class FileBrowser : ObservableRecipient
         SortRootFolderCommand = new RelayCommand(SortRootFolderExecuteAsync, CanSortRootFolderExecute);
         OpenFileCommand = new RelayCommand(OpenFileExecute, OpenFileCanExecute);
         CancelCommand = new RelayCommand(CancelSorting, parameter => IsSorting);
+        ChangeMetadataCommand = new RelayCommand(ChangeMetadataExecute, ChangeMetadataCanExecute);
+        var context = new ApplicationDbContext();
+        _fileManager = new FileManager(context);
+        ChangePermissionCommand = new RelayCommand(ChangePermissionExecute, ChangePermissionCanExecute);
     }
 
     public RelayCommand OpenRootFolderCommand { get; private set; }
@@ -35,7 +41,11 @@ public class FileBrowser : ObservableRecipient
 
     public RelayCommand OpenFileCommand { get; private set; }
 
-    public RelayCommand CancelCommand { get; }
+    public RelayCommand CancelCommand { get; private set; }
+
+    public RelayCommand ChangeMetadataCommand { get; private set; }
+    
+    public RelayCommand ChangePermissionCommand { get; private set; }
 
     public DirectoryInfoViewModel Root
     {
@@ -258,5 +268,49 @@ public class FileBrowser : ObservableRecipient
             }
 
         return string.Empty;
+    }
+
+    private void ChangeMetadataExecute(object parameter)
+    {
+        MetadataViewModel metadataViewModel = null;
+
+        if (parameter is FileInfoViewModel fileInfoViewModel)
+        {
+            metadataViewModel = _fileManager.GetFileMetadata(fileInfoViewModel.Model);
+        }
+        if (metadataViewModel != null)
+        {
+            var changeMetadataDialog = new ChangeMetadataDialog
+            {
+                DataContext = metadataViewModel
+            };
+
+            var result = changeMetadataDialog.ShowDialog();
+            if (result == true)
+            {
+                var metadata = changeMetadataDialog.Metadata;
+                _fileManager.AddOrUpdateFileMetadata(metadata.GetFileWithMetadata());
+            }
+        }
+    }
+
+    private bool ChangeMetadataCanExecute(object parameter)
+    {
+        return true;
+    }
+
+    private void ChangePermissionExecute(object parameter)
+    {
+        if (parameter is FileInfoViewModel fileInfoViewModel)
+        {
+            var permissions = _fileManager.GetUsersPermissionToFile(fileInfoViewModel.Model);
+            var dialog = new UserFilePermissionDialog(permissions);
+            dialog.ShowDialog();
+        }
+    }
+
+    private bool ChangePermissionCanExecute(object parameter)
+    {
+        return true;
     }
 }

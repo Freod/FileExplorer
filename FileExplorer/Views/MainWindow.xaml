@@ -7,18 +7,46 @@
         xmlns:converters="clr-namespace:FileExplorer.Converters"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+    <Window.DataContext>
+        <viewModels:FileBrowser />
+    </Window.DataContext>
     <Window.Resources>
+        <Style x:Key="OpenMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Header" Value="{Binding Source={StaticResource Strings}, Path=Open}" />
+            <Setter Property="Command" Value="{Binding OpenFileCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding}" />
+        </Style>
+        <Style x:Key="DeleteMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Header" Value="{Binding Source={StaticResource Strings}, Path=Delete}" />
+            <EventSetter Event="Click" Handler="DeleteMenuItem_Click" />
+        </Style>
+        <Style x:Key="CreateMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Header" Value="{Binding Source={StaticResource Strings}, Path=Create}" />
+            <EventSetter Event="Click" Handler="CreateMenuItem_Click" />
+        </Style>
+        <Style x:Key="MetadataChangeMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Header" Value="Change metadata" />
+            <Setter Property="Command" Value="{Binding ChangeMetadataCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding}" />
+        </Style>
+        <Style x:Key="ChangePermissionMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Header" Value="Change permission" />
+            <Setter Property="Command" Value="{Binding ChangePermissionCommand}" />
+            <Setter Property="CommandParameter" Value="{Binding}" />
+        </Style>
         <ContextMenu x:Key="FileContextMenu">
-            <MenuItem x:Name="OpenFileMenuItem"
-                      Header="{Binding Source={StaticResource Strings}, Path=Open}"
-                      Command="{Binding OpenFileCommand}" CommandParameter="{Binding}" />
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+            <MenuItem Style="{StaticResource OpenMenuItemStyle}" />
+            <MenuItem Style="{StaticResource DeleteMenuItemStyle}" />
+            <MenuItem Style="{StaticResource MetadataChangeMenuItemStyle}" />
+            <MenuItem Style="{StaticResource ChangePermissionMenuItemStyle}" />
         </ContextMenu>
         <ContextMenu x:Key="DirectoryContextMenu">
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
-                      Click="CreateMenuItem_Click" />
-            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+            <MenuItem Style="{StaticResource CreateMenuItemStyle}" />
+            <MenuItem Style="{StaticResource DeleteMenuItemStyle}" />
         </ContextMenu>
+        <Image x:Key="txtIcon" Source="/Resources/Images/txt.png" />
+        <Image x:Key="imageIcon" Source="/Resources/Images/imagefile.png" />
+        <Image x:Key="defaultIcon" Source="/Resources/Images/file.png" />
         <converters:ResourceKeyToImageSourceConverter x:Key="ResourceKeyToImageSourceConverter" />
         <DataTemplate DataType="{x:Type viewModels:FileInfoViewModel}">
             <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
@@ -69,6 +97,12 @@
                 </MenuItem>
                 <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Sort}"
                           Command="{Binding SortRootFolderCommand}" />
+                <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Users}">
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Register_User}"
+                              Click="RegisterUserButton_Click" />
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Manage}"
+                              Click="ManageUsersButton_Click" />
+                </MenuItem>
             </Menu>
 
             <ToolBarPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,10,0">
@@ -93,7 +127,6 @@
             <StatusBarItem>
                 <Button Content="Cancel" Command="{Binding CancelCommand}"
                         Visibility="{Binding IsSorting, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                <!-- Visibility="{Binding IsCancelVisible, Converter={StaticResource BooleanToVisibilityConverter}}" /> -->
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock x:Name="LoadingStatusTextBlock" Text="{Binding StatusMessage}" />

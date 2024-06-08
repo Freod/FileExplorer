@@ -1,0 +1,88 @@
+﻿<Window x:Class="FileExplorer.Views.ChangeMetadataDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:FileExplorer.Views"
+        xmlns:viewModels="clr-namespace:FileExplorer.ViewModels"
+        mc:Ignorable="d"
+        Title="ChangeMetadataDialog" Height="640" Width="500">
+    <Window.DataContext>
+        <viewModels:MetadataViewModel />
+    </Window.DataContext>
+
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Content="Title:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="5" Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <Label Content="Creator:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="5" Text="{Binding Creator, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Subject:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="5" Text="{Binding Subject, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Description:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="5" Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Publisher:" Grid.Row="4" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="5" Text="{Binding Publisher, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Contributor:" Grid.Row="5" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="5" Grid.Column="1" Margin="5" Text="{Binding Contributor, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Date:" Grid.Row="6" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <DatePicker Grid.Row="6" Grid.Column="1" Margin="5" SelectedDate="{Binding Date, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Type:" Grid.Row="7" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="7" Grid.Column="1" Margin="5" Text="{Binding Type, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Format:" Grid.Row="8" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="8" Grid.Column="1" Margin="5" Text="{Binding Format, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Identifier:" Grid.Row="9" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="9" Grid.Column="1" Margin="5" Text="{Binding Identifier, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Source:" Grid.Row="10" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="10" Grid.Column="1" Margin="5" Text="{Binding Source, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Language:" Grid.Row="11" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="11" Grid.Column="1" Margin="5" Text="{Binding Language, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Relation:" Grid.Row="12" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="12" Grid.Column="1" Margin="5" Text="{Binding Relation, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Coverage:" Grid.Row="13" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="13" Grid.Column="1" Margin="5" Text="{Binding Coverage, UpdateSourceTrigger=PropertyChanged}"/>
+        
+        <Label Content="Rights:" Grid.Row="14" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+        <TextBox Grid.Row="14" Grid.Column="1" Margin="5" Text="{Binding Rights, UpdateSourceTrigger=PropertyChanged}"/>
+
+        <StackPanel Grid.Row="15" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Save" Width="75" Margin="5" Click="SaveButton_Click"/>
+            <Button Content="Cancel" Width="75" Margin="5" IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

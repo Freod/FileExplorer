@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using FileExplorer.Managers;
 using FileExplorer.Resources;
 using FileExplorer.ViewModels;
 using Application = System.Windows.Application;
@@ -22,6 +23,10 @@ public partial class MainWindow : Window
         _fileBrowser.OnOpenFileRequest += FileBrowser_OnOpenFileRequest;
         TreeView.SelectedItemChanged += TreeView_SelectedItemChanged;
         DataContext = _fileBrowser;
+
+        var context = new ApplicationDbContext();
+        var fileManager = new FileManager(context);
+        fileManager.InitializeDatabase();
     }
 
     private void MenuExit_Click(object sender, RoutedEventArgs e)
@@ -132,6 +137,18 @@ public partial class MainWindow : Window
             var textView = new TextBlock { Text = text };
             TextPreviewScrollViewer.Content = textView;
         }
+    }
+    
+    private void RegisterUserButton_Click(object sender, RoutedEventArgs e)
+    {
+        var registrationDialog = new UserRegistrationDialog();
+        registrationDialog.ShowDialog();
+    }
+
+    private void ManageUsersButton_Click(object sender, RoutedEventArgs e)
+    {
+        var managementDialog = new UserManagementDialog();
+        managementDialog.ShowDialog();
     }
 
     private string ConvertAttributesToString(FileAttributes attributes)
