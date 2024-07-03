@@ -208,23 +208,22 @@ public class FileManager
             _context.Files.Add(file);
             _context.SaveChanges();
             existingFile = file;
+        }
 
-            var users = _context.Users.ToList();
-            foreach (var user in users)
+        var users = _context.Users.ToList();
+        foreach (var user in users)
+        {
+            var permission = new UserFilePermission
             {
-                var permission = new UserFilePermission
-                {
-                    UserId = user.UserId,
-                    FileId = existingFile.FileId,
-                    CanRead = true,
-                    CanWrite = true,
-                    CanDownload = true,
-                    CanUpload = true,
-                    CanSendNotifications = true
-                };
-                _context.UserFilePermissions.Add(permission);
-            }
-
+                UserId = user.UserId,
+                FileId = existingFile.FileId,
+                CanRead = true,
+                CanWrite = true,
+                CanDownload = true,
+                CanUpload = true,
+                CanSendNotifications = true
+            };
+            _context.UserFilePermissions.Add(permission);
             _context.SaveChanges();
         }
 
