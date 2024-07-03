@@ -1,0 +1,123 @@
+﻿<Window x:Class="FileExplorer.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:FileExplorer"
+        xmlns:viewModels="clr-namespace:FileExplorer.ViewModels"
+        xmlns:converters="clr-namespace:FileExplorer.Converters"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Window.Resources>
+        <ContextMenu x:Key="FileContextMenu">
+            <MenuItem x:Name="OpenFileMenuItem"
+                      Header="{Binding Source={StaticResource Strings}, Path=Open}"
+                      Command="{Binding OpenFileCommand}" CommandParameter="{Binding}" />
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+        </ContextMenu>
+        <ContextMenu x:Key="DirectoryContextMenu">
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
+                      Click="CreateMenuItem_Click" />
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+        </ContextMenu>
+        <Image x:Key="txtIcon" Source="/Resources/Images/txt.png" />
+        <Image x:Key="imageIcon" Source="/Resources/Images/imagefile.png" />
+        <Image x:Key="defaultIcon" Source="/Resources/Images/file.png" />
+        <converters:ResourceKeyToImageSourceConverter x:Key="ResourceKeyToImageSourceConverter" />
+        <DataTemplate DataType="{x:Type viewModels:FileInfoViewModel}">
+            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource FileContextMenu}">
+                <Image Width="16" Height="16" Source="{Binding IconResourceName, Converter={StaticResource ResourceKeyToImageSourceConverter}}" />
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0">
+                    <TextBlock.InputBindings>
+                        <MouseBinding MouseAction="LeftDoubleClick"
+                                      Command="{Binding DataContext.OpenFileCommand, RelativeSource={RelativeSource AncestorType=TreeView}}"
+                                      CommandParameter="{Binding}" />
+                    </TextBlock.InputBindings>
+                </TextBlock>
+            </StackPanel>
+        </DataTemplate>
+        <HierarchicalDataTemplate DataType="{x:Type viewModels:DirectoryInfoViewModel}"
+                                  ItemsSource="{Binding Items}">
+            <StackPanel Orientation="Horizontal" ContextMenu="{StaticResource DirectoryContextMenu}">
+                <Image Width="16" Height="16" Source="/Resources/Images/DirectoryIcon.png" />
+                <TextBlock Text="{Binding Caption}" Margin="10,0,0,0" FontWeight="Bold" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <Style x:Key="LangButtonStyle" TargetType="ToggleButton">
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Style.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter Property="BorderThickness" Value="1" />
+                    <Setter Property="BorderBrush" Value="Blue" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+        <converters:LangBoolConverter x:Key="LangBoolConverter" />
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+
+        <ContextMenu x:Key="TreeViewContextMenu">
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Create}" Name="CreateMenuItem"
+                      Click="CreateMenuItem_Click" />
+            <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Delete}" Click="DeleteMenuItem_Click" />
+        </ContextMenu>
+    </Window.Resources>
+
+    <DockPanel>
+        <Grid DockPanel.Dock="Top">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Menu Grid.Column="0">
+                <MenuItem Header="{Binding Source={StaticResource Strings}, Path=File}">
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Open}"
+                              Command="{Binding OpenRootFolderCommand}" />
+                    <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Exit}" Click="MenuExit_Click" />
+                </MenuItem>
+                <MenuItem Header="{Binding Source={StaticResource Strings}, Path=Sort}"
+                          Command="{Binding SortRootFolderCommand}" />
+            </Menu>
+
+            <ToolBarPanel Orientation="Horizontal" HorizontalAlignment="Right" Grid.Column="1" Margin="0,0,10,0">
+                <ToggleButton x:Name="PolishLangugageButton"
+                              Style="{StaticResource LangButtonStyle}"
+                              IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},ConverterParameter=pl}">
+                    <Image Source="/Resources/Images/PL.png" Width="16" />
+                </ToggleButton>
+                <ToggleButton x:Name="EnglishLangugageButton"
+                              Style="{StaticResource LangButtonStyle}"
+                              IsChecked="{Binding Lang, Converter={StaticResource LangBoolConverter},
+                    ConverterParameter=en}">
+                    <Image Source="/Resources/Images/EN.png" Width="16" />
+                </ToggleButton>
+            </ToolBarPanel>
+        </Grid>
+
+        <StatusBar DockPanel.Dock="Bottom">
+            <StatusBarItem>
+                <TextBlock x:Name="AttributesTextBlock" Text="" />
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button Content="Cancel" Command="{Binding CancelCommand}"
+                        Visibility="{Binding IsSorting, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                <!-- Visibility="{Binding IsCancelVisible, Converter={StaticResource BooleanToVisibilityConverter}}" /> -->
+            </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock x:Name="LoadingStatusTextBlock" Text="{Binding StatusMessage}" />
+            </StatusBarItem>
+        </StatusBar>
+
+        <TextBox AcceptsReturn="True" />
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" MinWidth="150" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <TreeView x:Name="TreeView"
+                      ItemsSource="{Binding Root.Items}" />
+            <ScrollViewer Grid.Column="1" Margin="10" x:Name="TextPreviewScrollViewer" />
+        </Grid>
+    </DockPanel>
+</Window>

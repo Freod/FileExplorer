@@ -1,0 +1,45 @@
+﻿<Window x:Class="FileExplorer.Views.SortDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:local="clr-namespace:FileExplorer"
+        xmlns:converters="clr-namespace:FileExplorer.Converters"
+        mc:Ignorable="d"
+        Title="SortDialog" Height="300" Width="300">
+    <Window.Resources>
+        <converters:SortByToBoolConverter x:Key="SortByToBoolConverter" />
+        <converters:DirectionToBoolConverter x:Key="DirectionToBoolConverter" />
+        <Style x:Key="{x:Type RadioButton}" TargetType="{x:Type RadioButton}">
+            <Setter Property="Margin" Value="5" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <StackPanel Margin="10">
+            <GroupBox Header="{Binding Source={StaticResource Strings}, Path=Sort_by}">
+                <StackPanel>
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Name}" Name="NameRadioButton"
+                                 IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=N}" />
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Extension}" Name="ExtensionRadioButton"
+                                 IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=E}" />
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Size}" Name="SizeRadioButton"
+                                 IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=S}" />
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Last_Modified_Date}" Name="DateRadioButton"
+                                 IsChecked="{Binding SortBy, Converter={StaticResource SortByToBoolConverter}, ConverterParameter=D}" />
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Header="{Binding Source={StaticResource Strings}, Path=Sort_order}" Margin="0,10,0,0">
+                <StackPanel>
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Ascending}" Name="AscendingRadioButton"
+                                 IsChecked="{Binding Direction, Converter={StaticResource DirectionToBoolConverter}, ConverterParameter=A}" />
+                    <RadioButton Content="{Binding Source={StaticResource Strings}, Path=Descending}" Name="DescendingRadioButton"
+                                 IsChecked="{Binding Direction, Converter={StaticResource DirectionToBoolConverter}, ConverterParameter=D}" />
+                </StackPanel>
+            </GroupBox>
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+                <Button Content="{Binding Source={StaticResource Strings}, Path=OK}" Click="OK_Click" />
+                <Button Content="{Binding Source={StaticResource Strings}, Path=Cancel}" Margin="10,0,0,0" Click="Cancel_Click" />
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>
